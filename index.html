@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="財管刷題">
+<meta name="theme-color" content="#ffffff">
+<title>財管刷題</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📚%3C/text%3E%3C/svg%3E">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", "Helvetica Neue", sans-serif;
+    background: #f5f5f0;
+    color: #1f1f1d;
+    line-height: 1.6;
+    font-size: 15px;
+    padding: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1 { font-size: 22px; font-weight: 600; margin: 8px 0 16px; }
+  h2 { font-size: 17px; font-weight: 600; margin: 20px 0 10px; color: #555; }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 14px;
+    border: 1px solid #e8e6df;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 4px;
+  }
+  .stat-num {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f1f1d;
+  }
+  .search-wrap {
+    margin-bottom: 16px;
+  }
+  .search-input {
+    width: 100%;
+    padding: 11px 14px;
+    background: #ffffff;
+    border: 1px solid #e8e6df;
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #1f1f1d;
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus {
+    border-color: #185fa5;
+  }
+  #search-results {
+    margin-top: 10px;
+    display: none;
+  }
+  .search-count {
+    font-size: 12px;
+    color: #888;
+    padding: 4px 4px 8px;
+  }
+  .search-empty {
+    padding: 16px;
+    text-align: center;
+    font-size: 13px;
+    color: #888;
+    background: #ffffff;
+    border: 1px solid #e8e6df;
+    border-radius: 10px;
+  }
+  .search-item {
+    background: #ffffff;
+    border: 1px solid #e8e6df;
+    border-radius: 10px;
+    padding: 11px 13px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .search-item:active {
+    transform: scale(0.99);
+    background: #f5f5f0;
+  }
+  .search-item-meta {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 3px;
+  }
+  .search-item-stem {
+    font-size: 13px;
+    line-height: 1.55;
+    color: #1f1f1d;
+    word-break: break-word;
+  }
+  mark {
+    background: #faeeda;
+    color: #854f0b;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+  .badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .badge-ok {
+    background: #e1f5ee;
+    color: #085041;
+  }
+  .badge-no {
+    background: #fcebeb;
+    color: #791f1f;
+  }
+  .mode-card {
+    background: #ffffff;
+    border: 1px solid #e8e6df;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    user-select: none;
+  }
+  .mode-card:active { transform: scale(0.98); background: #f5f5f0; }
+  .mode-card.disabled { opacity: 0.45; pointer-events: none; }
+  .mode-card-static {
+    background: #ffffff;
+    border: 1px solid #e8e6df;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 10px;
+    user-select: none;
+  }
+  .count-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .count-label {
+    font-size: 13px;
+    color: #888;
+  }
+  .count-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+  .count-pill {
+    padding: 6px 12px;
+    background: #f5f5f0;
+    border: 1px solid #e8e6df;
+    border-radius: 999px;
+    font-size: 13px;
+    color: #555;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .count-pill:active { transform: scale(0.95); }
+  .count-pill.active {
+    background: #1f1f1d;
+    color: #ffffff;
+    border-color: #1f1f1d;
+  }
+  .mode-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .mode-desc {
+    font-size: 13px;
+    color: #888;
+  }
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #888;
+  }
+  .progress-bar {
+    height: 4px;
+    background: #e8e6df;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #185fa5;
+    transition: width 0.3s;
+  }
+  .q-card {
+    background: #ffffff;
+    border: 1px solid #e8e6df;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .q-stem {
+    font-size: 15px;
+    line-height: 1.75;
+    margin-bottom: 14px;
+    word-break: break-word;
+  }
+  .opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    background: #ffffff;
+    border: 1px solid #e8e6df;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1f1f1d;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    word-break: break-word;
+  }
+  .opt:active:not(:disabled) { transform: scale(0.98); }
+  .opt:disabled { cursor: default; }
+  .opt.correct {
+    background: #e1f5ee;
+    border-color: #1d9e75;
+    color: #085041;
+  }
+  .opt.wrong {
+    background: #fcebeb;
+    border-color: #e24b4a;
+    color: #791f1f;
+  }
+  .opt-key {
+    display: inline-block;
+    width: 22px;
+    font-weight: 600;
+  }
+  .explain {
+    margin-top: 14px;
+    padding: 14px;
+    background: #f5f5f0;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.75;
+    color: #555;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .explain b {
+    color: #1f1f1d;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .btn-primary {
+    width: 100%;
+    padding: 13px;
+    background: #1f1f1d;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 14px;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn-primary:active { transform: scale(0.98); opacity: 0.85; }
+  .btn-secondary {
+    width: 100%;
+    padding: 11px;
+    background: transparent;
+    color: #888;
+    border: 1px solid #e8e6df;
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 16px;
+  }
+  .btn-back {
+    background: transparent;
+    border: none;
+    padding: 8px 0;
+    font-size: 14px;
+    color: #888;
+    cursor: pointer;
+    font-family: inherit;
+    margin-bottom: 6px;
+  }
+  .complete {
+    text-align: center;
+    padding: 32px 0;
+  }
+  .complete-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { background: #1a1a18; color: #f0efe9; }
+    .stat-card, .mode-card, .q-card, .mode-card-static { background: #28272a; border-color: #3a3936; }
+    .search-input { background: #28272a; border-color: #3a3936; color: #f0efe9; }
+    .search-input:focus { border-color: #378add; }
+    .search-item { background: #28272a; border-color: #3a3936; }
+    .search-item:active { background: #1a1a18; }
+    .search-item-stem { color: #f0efe9; }
+    .search-empty { background: #28272a; border-color: #3a3936; }
+    mark { background: #633806; color: #fac775; }
+    .badge-ok { background: #04342c; color: #9fe1cb; }
+    .badge-no { background: #501313; color: #f7c1c1; }
+    .count-pill { background: #1a1a18; border-color: #3a3936; color: #b5b3ac; }
+    .count-pill.active { background: #f0efe9; color: #1a1a18; border-color: #f0efe9; }
+    .stat-num { color: #f0efe9; }
+    .stat-label, .mode-desc, .meta-row, .btn-back, .btn-secondary { color: #999; }
+    .progress-bar { background: #3a3936; }
+    .opt { background: #28272a; border-color: #3a3936; color: #f0efe9; }
+    .opt.correct { background: #04342c; border-color: #1d9e75; color: #9fe1cb; }
+    .opt.wrong { background: #501313; border-color: #e24b4a; color: #f7c1c1; }
+    .explain { background: #1a1a18; color: #b5b3ac; }
+    .explain b { color: #f0efe9; }
+    .btn-primary { background: #f0efe9; color: #1a1a18; }
+    .mode-card:active { background: #1a1a18; }
+    .btn-secondary { border-color: #3a3936; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+const QUESTIONS = [
+{ch:1,n:1,stem:"財務管理的評價核心為",opts:["公司淨值","營運資金","稅前純益","稅後淨利","現金流量"],ans:4,exp:"財務管理以「現金流量」為評價核心,因為現金流量才是企業真正可運用的資金,且能反映時間價值;會計利潤可能因應計基礎或會計政策而失真。"},
+{ch:1,n:2,stem:"財務管理的主要內容是",opts:["編製財務報表","計算稅金","採購原物料","進行投資與融資決策","改良商品與技術研發"],ans:3,exp:"財務管理的兩大核心活動為「投資決策」(資金用於何處)與「融資決策」(資金從何取得),其他選項屬於會計、採購、生產或研發部門的工作。"},
+{ch:1,n:3,stem:"公司長期資產的投資規劃稱為 ___,短期資金的操作稱為 ___",opts:["融資決策、資金週轉","資本結構、股東權益管理","公司治理制度、財務規劃","資本配額、盈餘管理","資本預算、營運資金管理"],ans:4,exp:"「資本預算」針對長期資產(如廠房、設備)的投資規劃;「營運資金管理」處理短期資金(現金、存貨、應收帳款、應付帳款)的調度。"},
+{ch:1,n:4,stem:"下列何者是美國企業「財務長(Treasurer)」負責的業務?",opts:["財務報告之編製","成本會計","信用管理","所得稅稅務","財務稽核"],ans:2,exp:"美國企業財務長(Treasurer)負責資金管理,包括現金管理、信用管理、籌資、投資;其餘選項(財報編製、成本會計、稅務、稽核)屬於主計長(Controller)的職責。"},
+{ch:1,n:5,stem:"公司股東大會將改選董監事,若有股東向其他股東要求代表出席,行使投票權利,此種現象稱為",opts:["委託書爭奪戰","衍生性商品交易","代理人問題","惡意併購","內線交易"],ans:0,exp:"「委託書爭奪戰(Proxy Fight)」指爭取其他股東的委託書以取得董監事席次的行為,是公司控制權爭奪的方式之一。"},
+{ch:1,n:6,stem:"下列何者對日本「系列企業(Kereitsu)」的描述最正確?",opts:["上下游企業結盟低價排擠對手","關係企業,間接降低惡意併購","策略聯盟改善品質或銷售","相互債權保證增加公信力","海外子公司移轉價格降稅"],ans:1,exp:"日本系列企業(Kereitsu)是以銀行或大企業為核心的關係企業集團,成員間相互持股,可形成綿密的股權結構,間接降低被惡意併購的可能性。"},
+{ch:1,n:7,stem:"下列有關金融商品之敘述中,哪些為正確?\nI. 央行發行國庫券主要為提升幣值\nII. 商業本票由企業發行,銀行擔保可流通\nIII. 可轉讓定期存單由銀行發行,到期前可轉讓",opts:["I、III","I、II","II、III","II","I、II、III"],ans:2,exp:"II、III 正確。I 錯誤:央行發行國庫券主要是為了調節市場資金、控制貨幣供給,並非提升匯率。II 商業本票由企業發行,經銀行擔保後可在貨幣市場流通。III 可轉讓定期存單(NCD)由銀行發行,具流通性,到期前可轉讓。"},
+{ch:1,n:8,stem:"下列何者為到期日在一年以上的金融商品?",opts:["國庫券","銀行承兌匯票","商業本票","共同基金","可轉讓定期存單"],ans:3,exp:"(A)(B)(C)(E) 皆為一年以下的貨幣市場工具;共同基金通常無固定到期日(或長期投資),屬於資本市場工具。"},
+{ch:1,n:9,stem:"下列何者是由投信公司向投資人募集資金,匯集成龐大金額,交由專業經理人買賣證券的金融商品?",opts:["海外存託憑證","商業本票","共同基金","銀行承兌匯票","股票選擇權"],ans:2,exp:"這是「共同基金」的標準定義——投信公司募集投資人資金,委由專業經理人操作,投資人按持有單位分享盈虧。"},
+{ch:1,n:10,stem:"下列何者並不屬於衍生性金融商品?",opts:["海外存託憑證","期貨","金融交換","選擇權","以上皆是衍生性商品"],ans:0,exp:"海外存託憑證(DR)代表外國公司股票的所有權憑證,屬於現貨商品;期貨、選擇權、金融交換(SWAP)才是衍生性商品(其價值衍生自標的資產)。"},
+{ch:1,n:11,stem:"財務管理所主張的公司目標為",opts:["公司利潤極大化","股東財富極大化","管理者財富極大化","每股盈餘極大化","員工福利極大化"],ans:1,exp:"現代財務管理以「股東財富極大化」為目標,因其考慮了現金流量、時間價值與風險,優於只看會計利潤的「利潤極大化」。"},
+{ch:1,n:12,stem:"企業目標應具備哪些特性?\nI. 明確性 II. 多重性 III. 隱密性 IV. 具有衡量標準",opts:["I、II","II、III","I、IV","I、II、IV","II、III、IV"],ans:2,exp:"企業目標需具備明確性(避免模糊)與可衡量性(便於評估績效);目標若有多重(II)易造成衝突,隱密性(III)則無法傳達給員工執行。"},
+{ch:1,n:13,stem:"在何種條件下,追求股價極大化可使股東財富極大?",opts:["公司獲利不佳受併購威脅","不解雇未犯錯員工","債權人受保障","資本市場具有效率","市價接近帳面價值"],ans:3,exp:"只有在「資本市場具效率」時,股價才能正確反映公司真實價值,此時追求股價極大化才等於股東財富極大化。"},
+{ch:1,n:14,stem:"企業利用政治力量獲得特權,損害他人利益而獲得收益的行為稱為",opts:["企業倫理","積極性策略","代理人問題","多角化","尋租"],ans:4,exp:"「尋租(Rent-seeking)」指透過政治運作、遊說等非生產性活動獲取超額利益,而非透過生產或創新,屬於資源配置的扭曲。"},
+{ch:1,n:15,stem:"股東與管理者之間因動機不同而產生了利益衝突,將會產生",opts:["代理人問題","從眾行為","信用風險","資本利得","尋租"],ans:0,exp:"「代理人問題(Agency Problem)」指委託人(股東)與代理人(管理者)目標不一致,代理人可能為自身利益損害委託人權益。"},
+{ch:1,n:16,stem:"下列哪些屬於「代理人成本(Agency Costs)」?\nI. 監督成本 II. 尋租成本 III. 剩餘損失 IV. 破產成本",opts:["I、II","I、III","I、II、III","II、III","II、III、IV"],ans:1,exp:"代理成本包含三類:監督成本(股東監控管理者)、約束成本(管理者承諾的成本)、剩餘損失(無法完全消除的利益衝突造成的損失)。尋租與破產屬於其他類型成本。"},
+{ch:1,n:17,stem:"公司讓管理者以低於市價購買本身股票,但必須持有一段時間才能買賣,此種方式稱為",opts:["紅利制度","委託書爭奪戰","特權消費","股票選擇權計劃","金融交換"],ans:3,exp:"「股票選擇權計劃(Stock Option Plan)」讓管理者以特定價格認購股票並設有閉鎖期,將管理者利益與股東財富綁定,是解決代理問題的常見工具。"},
+{ch:1,n:18,stem:"何者不是用來解決股東和管理者之間代理問題的方式?",opts:["訂立管理獎勵計劃","直接股東干預","被開除的威脅","訂立債權限制條款","股票選擇權"],ans:3,exp:"「債權限制條款」是解決股東與「債權人」間代理問題的工具,並非解決股東與管理者間問題的方法。"},
+{ch:1,n:19,stem:"下列何者對「企業倫理(Business Ethics)」的定義最正確?",opts:["不更換上下游廠商","誠實公正對待股東、客戶、員工及供應商","不惡意併購","提高慈善捐款金額","不以追求利潤為目標"],ans:1,exp:"企業倫理指企業對所有利害關係人(股東、客戶、員工、供應商等)秉持誠實、公正的原則,不限於單一行為。"},
+{ch:1,n:20,stem:"下列有關「ESG」的敘述中,何者為正確?",opts:["ESG 僅帶來外部利益","ESG 重視氣體排放,溫度非主要目標","碳足跡是活動過程中直接和間接產生的排碳量","燃燒天然氣不計入排碳量","碳中和是指生產過程零排碳"],ans:2,exp:"(C) 正確,碳足跡涵蓋直接(自身生產)與間接(供應鏈、用電等)排碳。(A) ESG 也帶來品牌價值等內部利益。(B) 溫控(如 1.5°C 目標)是核心。(D) 天然氣燃燒會排 CO₂。(E) 碳中和指淨排放為零。"},
+
+{ch:2,n:1,stem:"下列何者對「國際會計準則(IFRS)」的敘述最正確?",opts:["不須編製特定報表","採原則方式訂定,允許會計專業判斷","各國自行判斷編製","規範各項會計處理方法","不須編製現金流量表"],ans:1,exp:"IFRS 採「原則基礎(Principle-based)」,允許企業依專業判斷處理會計事項,有別於美國 GAAP 的「規則基礎(Rule-based)」。"},
+{ch:2,n:2,stem:"下列哪一個科目並不屬於資產負債表?",opts:["基金與長期投資","專利與特許權","資本公積","保留盈餘","會計原則變更累積影響數"],ans:4,exp:"「會計原則變更累積影響數」屬於損益表(或權益變動表)中的調整項目,並非資產負債表科目。"},
+{ch:2,n:3,stem:"綜合損益表係表示企業",opts:["特定時日的經營結果","特定時日的財務狀況","一段期間的經營成果","一段期間的財務狀況","一段期間的權益變化"],ans:2,exp:"綜合損益表為「期間報表」,反映企業某段期間的經營成果(收入-費用=損益)。資產負債表才是「時點報表」。"},
+{ch:2,n:4,stem:"下列何種報表分為營業、投資、籌資三種活動?",opts:["資產負債表","損益表","權益變動表","現金流量表","以上皆是"],ans:3,exp:"現金流量表將現金流量分類為三大活動:營業活動、投資活動、籌資(融資)活動。"},
+{ch:2,n:5,stem:"下列哪些屬於無形資產?\nI. 版權 II. 特許權 III. 租賃資產 IV. 專利權",opts:["I、II","I、IV","I、II、III","I、II、IV","I、II、III、IV"],ans:3,exp:"版權、特許權、專利權皆為無形資產;租賃資產屬於使用權資產(IFRS 16 後列於有形資產類)或不動產廠房及設備類。"},
+{ch:2,n:6,stem:"公司未來可以抵減所得稅的金額應列為",opts:["資產","負債","股東權益","損失","利益"],ans:0,exp:"未來可抵減所得稅的金額為「遞延所得稅資產(Deferred Tax Asset)」,代表未來可少繳稅,屬於資產項目。"},
+{ch:2,n:7,stem:"下列何者對「比率分析法」的敘述最正確?",opts:["以財報中兩個相關項目計算比率","分析不同公司成本佔銷售比率","列示各組成項目占總額百分比","比較不同年度相同項目","比較市價與帳面價值"],ans:0,exp:"比率分析法是將財報中兩個有意義的項目相除,得出比率以分析公司狀況。(C) 是共同比分析,(D) 是趨勢分析。"},
+{ch:2,n:8,stem:"金融機構與債券投資人會以公司的何種資料計算,作為放款與投資的參考?",opts:["無形資產","企業主私人資產","董監事人數與持股","每年實體投資金額","財務比率"],ans:4,exp:"金融機構與債券投資人主要透過財務比率(如負債比、利息保障倍數、流動比率)評估公司償債能力與信用風險。"},
+{ch:2,n:9,stem:"某證券分析師希望瞭解 A 公司銷貨的獲利狀況,應看下列哪一個比率?",opts:["資產報酬率","固定資產報酬率","純益率","股東權益報酬率","應收帳款週轉率"],ans:2,exp:"「純益率 = 稅後淨利 / 銷貨淨額」,直接衡量每元銷貨能產生多少利潤,反映銷貨獲利狀況。"},
+{ch:2,n:10,stem:"下列有關「速動比率」之敘述中,哪些為正確?\nI. 速動比率 = 速動資產 / 流動負債\nII. 速動比率 ≤ 流動比率\nIII. 速動比率遠大於產業平均應考慮存貨過多\nIV. 短期金融資產增加、短期負債減少,速動比率上升",opts:["I、II","I、IV","I、II、III","I、II、IV","I、II、III、IV"],ans:3,exp:"I、II、IV 正確。III 錯誤:速動比率「遠大於」產業平均,代表速動資產(現金、應收)過多,而非存貨過多;若是「流動比率遠大於速動比率」才表示存貨過多。"},
+{ch:2,n:11,stem:"下列有關存貨比率之敘述中,何者為正確?",opts:["存貨週轉率=銷貨成本/平均存貨;售貨日數=1/週轉率","存貨週轉率=銷貨成本/平均存貨;售貨日數=365/週轉率","存貨週轉率=銷貨成本/平均存貨;售貨日數=總資產/週轉率","存貨週轉率=總資產/平均存貨;售貨日數=1/週轉率","存貨週轉率=365/平均存貨;售貨日數=總資產/週轉率"],ans:1,exp:"標準公式:存貨週轉率 = 銷貨成本 / 平均存貨;平均售貨日數 = 365 / 存貨週轉率(代表存貨在倉庫平均停留天數)。"},
+{ch:2,n:12,stem:"下列何者對「經濟附加價值(EVA)」之敘述最正確?",opts:["計算時應扣除利息費用","應考慮稅後資本成本","等於會計淨利扣除現金股利","應利用資產的市價計算","比較市價與帳面價值差異"],ans:1,exp:"EVA = 稅後營業淨利(NOPAT) - 投入資本 × 加權平均稅後資本成本(WACC)。重點是要扣除「全部資金成本」(包含權益成本),而非僅扣除利息。"},
+{ch:2,n:13,stem:"下列何者對「市場附加價值(MVA)」之敘述為錯誤?",opts:["MVA = 股票價值扣除投資人提供資本的差額","MVA 是長期觀念非短期炒作","MVA 等於各年度 EVA 加總","增加流通股數不一定能增加 MVA","比較市價與帳面價值差異的方法"],ans:2,exp:"理論上 MVA 等於未來各期 EVA 的「現值加總」(折現),而非單純加總。其餘敘述皆正確。"},
+{ch:2,n:14,stem:"史奴比公司速動比率 1.4,流動比率 2.0,流動負債 $400,000,現金及約當現金 $220,000,無預付費用。則「存貨」為何?",opts:["$240,000","$320,000","$340,000","$380,000","$560,000"],ans:0,exp:"流動資產 = 2.0 × 400,000 = 800,000\n速動資產 = 1.4 × 400,000 = 560,000\n存貨 = 800,000 - 560,000 = 240,000"},
+{ch:2,n:15,stem:"凱蒂貓公司稅後淨利 $1,200,000,總資產週轉率 2.0,純益率 4%。「總資產報酬率(ROA)」為何?",opts:["2%","4%","6%","8%","10%"],ans:3,exp:"杜邦公式:ROA = 純益率 × 總資產週轉率 = 4% × 2.0 = 8%"},
+{ch:2,n:16,stem:"維尼熊公司利息保障倍數(TIE)為 8,股東權益 $40,000 萬,利息費用 $450 萬,平均稅率 25%。「股東權益報酬率(ROE)」為何?",opts:["5.4%","5.9%","6.5%","7.4%","10.5%"],ans:1,exp:"EBIT = 8 × 450 = 3,600 萬\n稅前淨利 = 3,600 - 450 = 3,150 萬\n稅後淨利 = 3,150 × 0.75 = 2,362.5 萬\nROE = 2,362.5 / 40,000 ≈ 5.91%"},
+{ch:2,n:17,stem:"美猴王公司今年初流通股數 2,000 萬股,7 月 1 日發放每股股票股利 $2(股數增加 20%),年底淨利 $5,000 萬,特別股股利 $680 萬。加權平均「每股盈餘」為何?",opts:["$1.68","$1.80","$1.92","$2.09","$2.16"],ans:1,exp:"股票股利需「追溯調整」自年初(全年 2,400 萬股)\n調整後流通股數 = 2,000 × 1.2 = 2,400 萬股\nEPS = (5,000 - 680) / 2,400 = $1.80"},
+{ch:2,n:18,stem:"唐老鴨公司原料存貨持有 18 天,在製品 20 天,存貨週轉天數 62 天,應付帳款轉換 40 天。製成品存貨週轉率為多少次?(一年 360 天)",opts:["18 次","7.5 次","15 次","5 次","24 次"],ans:2,exp:"製成品存貨持有天數 = 62 - 18 - 20 = 24 天\n製成品週轉率 = 360 / 24 = 15 次"},
+{ch:2,n:19,stem:"笑笑羊公司 ROE 15%,淨利 $360 萬,負債 $3,600 萬,銷售 $1.2 億。「總資產週轉率」為何?",opts:["2.0","2.5","3.0","3.5","4.0"],ans:0,exp:"股東權益 = 360 / 15% = 2,400 萬\n總資產 = 3,600 + 2,400 = 6,000 萬\n總資產週轉率 = 12,000 / 6,000 = 2.0"},
+{ch:2,n:20,stem:"小馬王公司純益率 11.4%,資產週轉率 1.34,業主權益比率 0.67,則「ROE」為",opts:["10.23%","12.7%","5.7%","22.8%","33.2%"],ans:3,exp:"杜邦三因子:ROE = 純益率 × 資產週轉率 × 權益乘數\n權益乘數 = 1 / 0.67 ≈ 1.4925\nROE = 11.4% × 1.34 × 1.4925 ≈ 22.8%"},
+{ch:2,n:21,stem:"灰太狼公司營收 10,000 萬,總負債 2,000 萬,純益率 10%,總資產週轉率 2。「ROE」為",opts:["20%","33%","60%","67%","75%"],ans:1,exp:"淨利 = 10,000 × 10% = 1,000 萬\n總資產 = 10,000 / 2 = 5,000 萬\n股東權益 = 5,000 - 2,000 = 3,000 萬\nROE = 1,000 / 3,000 ≈ 33.3%"},
+{ch:2,n:22,stem:"頑皮豹公司每年銷售 $18,000,000,應收帳款週轉次數由 6 次降為 5 次,平均應收帳款應",opts:["增加 $600,000","減少 $600,000","增加 $180,000","減少 $180,000","無法確定"],ans:0,exp:"原應收帳款 = 18,000,000 / 6 = 3,000,000\n新應收帳款 = 18,000,000 / 5 = 3,600,000\n增加 = 600,000"},
+{ch:2,n:23,stem:"甲公司將銀行短期借款轉為長期借款,將造成下列何項變動?",opts:["淨營運資金增加,流動比率上升","淨營運資金減少,流動比率上升","淨營運資金增加,速動比率下降","淨營運資金減少,速動比率下降","融資活動淨現金流入增加"],ans:0,exp:"短期借款轉長期借款,使流動負債減少。\n淨營運資金 = 流動資產 - 流動負債 → 淨營運資金增加\n流動比率 = 流動資產 / 流動負債 → 比率上升"},
+{ch:2,n:24,stem:"折舊費用增加將使企業\nI. 稅後淨利增加 II. 稅後淨利減少\nIII. 資產現金流量增加 IV. 資產現金流量減少",opts:["I","II","I 與 III","II 與 III"],ans:3,exp:"折舊增加 → 稅後淨利減少(II)。但折舊是非現金費用,且具「節稅效果」,使應繳稅減少 → 現金流量增加(III)。"},
+{ch:2,n:25,stem:"艾莎公司稅後淨利 $160,000,純益率 8%,毛利率 30%,所得稅率 20%。營業費用為?",opts:["750,000","400,000","366,667","500,000","423,333"],ans:1,exp:"銷售額 = 160,000 / 8% = 2,000,000\n毛利 = 2,000,000 × 30% = 600,000\n稅前淨利 = 160,000 / 0.8 = 200,000\n營業費用 = 600,000 - 200,000 = 400,000"},
+{ch:2,n:26,stem:"下列敘述何者正確?",opts:["EVA 與 NI 最大差異是 NI 扣除權益成本,EVA 是扣除權益成本前的 NI","MVA 指過去一年管理部門增加的價值","MVA = 流通股數×股價 + 普通股帳面價值","EVA = EBIT×(1-T) - 投資人提供資本×稅後資金成本","EVA 並無考慮所得稅"],ans:3,exp:"(D) 正確,即 EVA = NOPAT − (投入資本 × WACC)。\n(A) 顛倒:NI 不扣權益成本,EVA 才扣。\n(B) MVA 是長期觀念。\n(C) MVA = 市值 - 投入資本。\n(E) EVA 用稅後 NOPAT 已考慮所得稅。"},
+{ch:2,n:27,stem:"同光企業:總資產 $200,000,負債佔資產 65%,EBIT $25,000,負債利率 8%,所得稅率 40%。「ROE」為?",opts:["12.51%","13.14%","13.49%","13.80%","13.95%"],ans:0,exp:"負債 = 200,000 × 65% = 130,000;股東權益 = 70,000\n利息費用 = 130,000 × 8% = 10,400\n稅前淨利 = 25,000 - 10,400 = 14,600\n稅後淨利 = 14,600 × 0.6 = 8,760\nROE = 8,760 / 70,000 ≈ 12.51%"},
+
+{ch:3,n:1,stem:"「現值」與「終值」的關係為",opts:["現值 = 1/終值","現值 = 終值/折現因子","現值 = 終值 × 折現因子","現值 = 終值 × (1+利率)^t","終值 = 現值/利率"],ans:2,exp:"現值 = 終值 × 折現因子 = 終值 × 1/(1+i)^t = 終值 / (1+i)^t"},
+{ch:3,n:2,stem:"期初存入單一金額,以複利計算,則下列敘述何者最正確?",opts:["期數愈長,未來值愈小","利率愈高,未來值愈小","未來值與利率成正比、與期數無關","未來值與期數、利率成正比","未來值與期數成正比、與利率無關"],ans:3,exp:"FV = PV × (1+i)^n,未來值與期數(n)及利率(i)皆成正向關係。"},
+{ch:3,n:3,stem:"一般年金的現值以 PMT × Σ[1/(1+i)^t] 表示,這種年金是何種模式?",opts:["期末模式","期中模式","期初模式","成長模式","等額模式"],ans:0,exp:"普通年金(Ordinary Annuity)假設付款發生在「期末」,即第 1 期、第 2 期...期末各支付一次。"},
+{ch:3,n:4,stem:"張君每年存入金額,以複利計算,則每年存入金額與下列何者成正比?",opts:["期數","利率","退休金金額","以上皆是","以上皆非"],ans:2,exp:"目標退休金愈高,每年存入金額愈高(成正比);但期數愈多、利率愈高,每年存入愈少(成反比)。"},
+{ch:3,n:5,stem:"下列哪些變數升高後,會增加年金的現值?\nI. 期數 II. 利率 III. 每期金額",opts:["I","I、II","I、III","II、III","I、II、III"],ans:2,exp:"期數↑現值↑(累積更多現金流);每期金額↑現值↑;但利率↑現值↓(折現更多)。"},
+{ch:3,n:6,stem:"下列有關貨幣價值的敘述中,何者最正確?",opts:["計算次數愈多的存款,未來金額愈少","利率 10%、無限多次年金總額無限大","複利計算無限次,領回金額無限大","分期付款利率愈高,每期金額愈少","期初模式現值高於期末模式"],ans:4,exp:"期初年金較期末年金提早一期收到款項,故現值較高(期初現值 = 期末現值 × (1+i))。\n其餘:(A) 反之;(B) 永續年金現值有限 = PMT/i;(C) 連續複利在固定期間內仍有限;(D) 利率愈高,每期金額愈大。"},
+{ch:3,n:7,stem:"下列有關「分期付款」的敘述中,何者最正確?",opts:["期數金額相同,期初攤還較有利","攤還的本金隨時間增加","攤還的利息隨時間增加","利率愈高,每期攤還愈少","期數愈長,每期攤還愈多"],ans:1,exp:"分期付款中,每期固定金額(本利和),隨時間經過利息減少、本金償還增加。"},
+{ch:3,n:8,stem:"某人計劃 10 年內每年存 $24 萬,以複利計算,則下列何種方式未來值最高?",opts:["每月存 $2 萬","每兩月存 $4 萬","每季存 $6 萬","每半年存 $12 萬","每年存 $24 萬"],ans:0,exp:"計息次數愈多、每筆存款留存愈久,複利效果愈大,故每月存款的未來值最高。"},
+{ch:3,n:9,stem:"每年金額 $20 萬、利率 2% 的「永續年金」現值為何?",opts:["$4 萬","$100 萬","$200 萬","$1,000 萬","無法計算"],ans:3,exp:"永續年金現值 = PMT / i = 20 萬 / 0.02 = 1,000 萬"},
+{ch:3,n:10,stem:"趙先生每年年初存款 $30,000,第 5 年年底可領回 $180,000,則年利率為何?",opts:["6.12%","6.14%","6.16%","6.18%","6.20%"],ans:1,exp:"期初年金未來值:30,000 × FVIFA(i, 5) × (1+i) = 180,000\n試算 i = 6.14%:FVIFA ≈ 5.6473,5.6473 × 1.0614 ≈ 5.9942\n30,000 × 5.9942 ≈ 179,826 ≈ 180,000 ✓"},
+{ch:3,n:11,stem:"錢小姐 12 年後退休,每年年底存款,年利率 7.5%,共可領回 $1,013,305,則每年存款為?",opts:["$51,163","$53,396","$55,000","$56,784","62,518"],ans:2,exp:"普通年金未來值:PMT × FVIFA(7.5%, 12) = 1,013,305\nFVIFA(7.5%, 12) ≈ 18.4242\nPMT = 1,013,305 / 18.4242 ≈ $55,000"},
+{ch:3,n:12,stem:"孫太太 10 年期儲蓄保險,每年年初存款,利率 3%,第 10 年年底領回 $1,000,000,每年繳款為?",opts:["$84,690","$82,223","$80,000","$87,230","$88,020"],ans:0,exp:"期初年金未來值:PMT × FVIFA(3%, 10) × 1.03 = 1,000,000\nFVIFA(3%, 10) ≈ 11.4639\nPMT = 1,000,000 / (11.4639 × 1.03) ≈ $84,690"},
+{ch:3,n:13,stem:"李經理每年年初存款 $50,000,第 5 年年底領回 $303,186,則年利率為?",opts:["5.0%","5.5%","6.0%","6.5%","6.8%"],ans:3,exp:"期初年金:50,000 × FVIFA(i, 5) × (1+i) = 303,186 → FVIFA × (1+i) = 6.06372\n試 6.5%:FVIFA(6.5%, 5) ≈ 5.6936;5.6936 × 1.065 ≈ 6.0637 ✓"},
+{ch:3,n:14,stem:"周醫師今年初存 $10,000,名目年利率 5%,每半年複利一次,則第 2 年年底本利和為?",opts:["$11,000","$11,025","$11,038","$11,050","$11,120"],ans:2,exp:"半年計息,每期利率 2.5%,共 4 期\nFV = 10,000 × (1.025)^4 = 10,000 × 1.10381 ≈ $11,038"},
+{ch:3,n:15,stem:"吳小弟 2 年前壓歲錢 $10,000 存定存(年利率 1.5%),去年又存 $10,000(年利率 1.2%),今年到期存款為?",opts:["$20,270","$20,392","$20,422","$20,452","$20,500"],ans:1,exp:"第一筆兩年期:10,000 × 1.015 × 1.012 ≈ 10,271.8\n第二筆一年期:10,000 × 1.012 = 10,120\n合計 ≈ $20,392"},
+{ch:3,n:16,stem:"某人貸款 1,000 萬,年利率 3%,分 20 年每年年底平均攤還(普通年金)。每年應付金額?(20 年 3% 年金現值因子 14.8775)",opts:["63.4 萬","65.2 萬","67.2 萬","69.4 萬"],ans:2,exp:"PMT = 貸款金額 / PVIFA = 10,000,000 / 14.8775 ≈ 672,157 ≈ 67.2 萬"},
+
+{ch:4,n:1,stem:"經由金融機構保證所發行的公司債稱為",opts:["可轉換債券","指數債券","零息債券","收益債券","擔保公司債"],ans:4,exp:"「擔保公司債」由第三方(通常是金融機構)提供保證,違約時由保證人代償,信用較高。"},
+{ch:4,n:2,stem:"發行公司要具有盈餘才支付利息的債券稱為",opts:["可收回債券","指數債券","零息債券","收益債券","次級公司債"],ans:3,exp:"「收益債券(Income Bond)」只在公司有盈餘時才付息,類似特別股性質,常見於財務重整。"},
+{ch:4,n:3,stem:"X 公司發行五年期債券,持有人兩年後可按比率轉換為「Y 公司」股票,此種債券稱為",opts:["收益債券","指數債券","本利分離債券","可轉換公司債","可交換公司債"],ans:4,exp:"轉換為「他公司」股票稱「可交換公司債(Exchangeable Bond)」;轉換為「發行公司本身」股票才叫可轉換公司債。"},
+{ch:4,n:4,stem:"下列何種證券並不具有「選擇權」之性質?",opts:["可收回債券","賣權債券","浮動利率債券","可轉換債券","附認購權證公司債"],ans:2,exp:"浮動利率債券利率隨市場變動,不含選擇權性質;其他選項皆內嵌選擇權(收回權、賣回權、轉換權、認購權)。"},
+{ch:4,n:5,stem:"公司發行債券明訂在一定時間後可變更為股票,此種債券為",opts:["可轉換債券","信用公司債","抵押債券","可收回債券","收益債券"],ans:0,exp:"「可轉換公司債(Convertible Bond)」賦予持有人按約定條件將債券轉為發行公司「自家股票」的權利。"},
+{ch:4,n:6,stem:"下列事項中,何者最可能使流通在外債券之價格上揚?",opts:["大型企業發行大量債券","央行調高貼現率","風險變動使殖利率上升","債券評等普遍降級","國際油價與通貨膨脹下降"],ans:4,exp:"油價與通膨下降 → 市場利率下降 → 債券價格上漲(債券價格與利率反向)。其他選項皆使利率上升或風險增加。"},
+{ch:4,n:7,stem:"K 汽車公司營運變差,其流通債券將有何變化?",opts:["違約風險升、殖利率降","違約風險升、殖利率升","違約風險升、殖利率不變","到期日風險升、殖利率升","流動性風險升、殖利率降"],ans:1,exp:"營運惡化 → 違約風險上升 → 投資人要求更高報酬補償 → 殖利率上升、價格下跌。"},
+{ch:4,n:8,stem:"市場利率上升時,條件相同但到期日不同的債券價格如何變動?",opts:["皆下跌、長期債下跌較多","皆下跌、短期債下跌較多","皆上漲、長期債上漲較多","皆上漲、短期債上漲較多","短期漲、長期跌"],ans:0,exp:"利率上升 → 債券價格下跌。長期債券存續期間較長,對利率變動敏感度高,故跌幅較大(利率風險較高)。"},
+{ch:4,n:9,stem:"J 公司債券評等由 A 升為 AA,殖利率與價格應",opts:["上升、上升","下降、下降","上升、下降","下降、上升","不變、上升"],ans:3,exp:"評等提升 → 違約風險降低 → 投資人要求殖利率下降 → 債券價格上升。"},
+{ch:4,n:10,stem:"下列何者對債券評等有正面影響?",opts:["利息保障倍數升高","設立收回條款","發行次級公司債","增加退休金","公司租賃金額不受限制"],ans:0,exp:"利息保障倍數高代表公司清償利息能力強,有利於評等。其他選項都會降低債權人保障。"},
+{ch:4,n:11,stem:"一般「投資等級」債券,在標準普爾(S&P)評等至少在何種等級以上?",opts:["A","BBB","BB","B"],ans:1,exp:"S&P 評等中,BBB 級(含)以上為投資等級,BB 級(含)以下為「投機等級」(垃圾債券)。"},
+{ch:4,n:12,stem:"債券信用評等被「調降」時,違約風險貼水與市場價格通常會如何變動?",opts:["貼水上升,價格上升","貼水上升,價格下跌","貼水下降,價格上升","貼水下降,價格下跌"],ans:1,exp:"評等調降 → 違約風險增加 → 風險貼水上升、要求報酬上升 → 債券價格下跌。"},
+{ch:4,n:13,stem:"持有股票即是該公司的",opts:["債權人","股東","董事","債務人","信託人"],ans:1,exp:"股票代表公司所有權,持有人即為股東,享有盈餘分配權與表決權。"},
+{ch:4,n:14,stem:"福特 B 股由家族持有,占流通股數 15%,卻有 40% 投票權。此種股票稱為",opts:["追縱股","可轉換特別股","創始人股票","無面額股票","累積特別股"],ans:2,exp:"「創始人股票(Founder's Stock)」是公司創始家族保留控制權的特殊股票,投票權超過持股比例。"},
+{ch:4,n:15,stem:"下列有關「戈登模式(Gordon Model)」之敘述中,哪些為正確?\nI. 假設股價具真值 II. 每期成長率固定\nIII. 每期股利固定 IV. 成長率小於股東必要報酬率",opts:["I、III","II、IV","I、II、IV","II、III、IV","I、II、III、IV"],ans:2,exp:"戈登成長模式:P₀ = D₁ / (k - g)\nI 假設市場效率,股價反映真值 ✓\nII 每期股利「成長率」g 固定 ✓\nIII 錯,每期股利並非固定,而是依 g 成長\nIV 必要 k > g,否則公式不收斂 ✓"},
+{ch:4,n:16,stem:"「股利殖利率」(或股利率)係指",opts:["每股市價/每股股利","每股股利/每股市價","每股盈餘/每股市價","每股市價/每股盈餘"],ans:1,exp:"股利殖利率 = 每股股利 / 每股市價,衡量每元股票投資能領到多少股利。"},
+{ch:4,n:17,stem:"使用「市場比較法」評估價格時,下列何者最正確?",opts:["不易找到性質類似的樣本公司","必須計算股東必要報酬率","必須由交易所同意","多角化公司較容易比價","盈餘為負數才有意義"],ans:0,exp:"市場比較法的最大限制是難以找到「完全可比較」的同質公司,因每家公司業務、規模、風險都有差異。多角化公司更難比價。"},
+{ch:4,n:18,stem:"公司宣布「股票分割」(Stock Split) 時,對基本面與股東權益的影響,何者正確?",opts:["公司總資產增加","股東持股比例改變","股票面額按比例降低,總股東權益價值不變","公司必須撥出大量現金支付股東"],ans:2,exp:"股票分割只是「分割股票」,股數增加、面額按比例降低,總股東權益價值不變;不影響資產、不需動用現金、持股比例不變。"},
+
+{ch:5,n:1,stem:"報酬率的標準差(Standard Deviation)是衡量公司的",opts:["營運風險","系統風險","非系統風險","股價波動程度","破產風險"],ans:3,exp:"標準差衡量報酬率分散程度,即股價(或報酬率)的「波動程度」,是總風險的衡量指標。"},
+{ch:5,n:2,stem:"下列有關報酬率之敘述中,何者最正確?",opts:["判斷投資行為應以實際報酬率為基礎","幾何均數通常高估","期望報酬率以事前眼光評估","幾何均數不受交易費用影響","實際報酬率使用事前機率計算"],ans:2,exp:"期望報酬率(Expected Return)是基於各種可能情境的「事前」加權平均;實際報酬率才是「事後」結果。\n(B) 幾何均數通常「低估」(因考慮複利);(D) 受交易費用影響;(E) 實際報酬用事後資料。"},
+{ch:5,n:3,stem:"下列有關風險與報酬率之敘述中,何者最正確?",opts:["期望風險與期望報酬率成反比","實際風險愈大,實際報酬率愈高","價格波動愈大,風險愈低","期望風險愈大、期望報酬率愈高","計算實際風險須先知機率"],ans:3,exp:"「高風險高報酬」原則,投資人承擔較高期望風險時,要求較高的期望報酬率(風險溢酬)。實際結果不一定符合此關係。"},
+{ch:5,n:4,stem:"學者馬可維茲(H. Markowitz)的投資組合理論,主要論點是",opts:["系統風險的消除","分散破產風險","非系統風險的定義","透過積極管理提高報酬","分散投資組合風險"],ans:4,exp:"馬可維茲(1952)提出現代投資組合理論(MPT),核心是透過「分散投資」降低風險(主要是非系統風險),建立效率前緣。"},
+{ch:5,n:5,stem:"投資組合內個別資產相關係數為 0 時,代表",opts:["無風險分散效果","有風險分散效果","風險分散達最佳","風險分散優於相關係數為 -1 之組合","投資組合不具風險"],ans:1,exp:"只要相關係數 < 1 都有分散效果;相關係數 = -1 才是最佳分散(可消除風險);相關係數 = 0 仍有分散效果但非最佳。"},
+{ch:5,n:6,stem:"下列有關「變異係數(C.V.)」之敘述中,何者為正確?",opts:["衡量風險,C.V. = 標準差/平均報酬率","衡量期望報酬率,C.V. = 平均報酬率/標準差","衡量風險,C.V. = 平均報酬率/標準差","衡量期望報酬率,C.V. = 標準差/平均報酬率","衡量企業營運風險,為迴歸係數"],ans:0,exp:"變異係數 = 標準差 / 平均報酬率,衡量「每單位報酬所承擔的風險」,可用於不同報酬率水準的比較。"},
+{ch:5,n:7,stem:"兩種證券所形成的組合風險為零,則相關係數應為",opts:["1","0.5","0","-0.5","-1"],ans:4,exp:"唯有相關係數為 -1(完全負相關)時,適當權重的組合可使風險完全消除(σp = 0)。"},
+{ch:5,n:8,stem:"下列有關「證券組合」之敘述中,何者最正確?",opts:["個別證券風險愈低、關聯性愈高,愈能降低風險","個別證券系統風險愈低,愈能降低風險","個別證券彼此關聯性愈低,愈能降低風險","報酬率與關聯性愈高,愈能降低風險","個別證券非系統風險愈低,愈能降低風險"],ans:2,exp:"證券間「相關性愈低」(甚至為負),分散效果愈好,組合風險愈低。"},
+{ch:5,n:9,stem:"下列有關「證券組合」之敘述中,何者最正確?",opts:["大量分散持股可消除所有市場風險","股票相關性愈高、組合風險愈低","持有 40 種股票後再增加無法降低風險","大量分散持股可消除所有個別(特定)風險"],ans:3,exp:"分散投資只能消除「非系統風險(特定風險)」,無法消除系統風險(市場風險)。一般認為持股 30~40 種已可消除大部分非系統風險,但仍可少量再降。"},
+{ch:5,n:10,stem:"由個別證券報酬率與市場報酬率作簡單迴歸,所求得直線的斜率是",opts:["貝他(β)值","標準差","變異數","無風險利率","避險比率"],ans:0,exp:"特徵線(Characteristic Line)迴歸式:Ri = α + β·Rm + ε,斜率即「貝他係數 β」,衡量個別證券對市場報酬的敏感度。"},
+{ch:5,n:11,stem:"衡量風險時,石油危機、世界大戰屬於",opts:["企業風險","財務風險","市場風險","流動性風險","到期日風險"],ans:2,exp:"石油危機、戰爭等系統性事件影響整個市場,屬於「市場風險(系統風險)」,無法透過分散投資消除。"},
+{ch:5,n:12,stem:"下列事件中,哪一項不屬於「系統風險」?",opts:["央行調高貼現率","出口成長率下降","國際油價下跌","通貨膨脹率升高","公司撤換總經理"],ans:4,exp:"「公司撤換總經理」屬於個別公司事件,影響有限,屬於「非系統風險」。其他皆為總體經濟事件。"},
+{ch:5,n:13,stem:"下列何種投資組合的非系統風險較小?",opts:["個別產業股票型基金","股價指數基金","個別股票","成長型股票基金","無法比較"],ans:1,exp:"股價指數基金涵蓋市場上多種股票,分散程度最高,非系統風險最小,接近僅剩系統風險。"},
+{ch:5,n:14,stem:"基金經理人預期未來股市上漲,應採何項行動?",opts:["調低持股比率","集中持有傳統產業","調高投資組合的貝他係數","分散投資","買入非股票資產"],ans:2,exp:"β 值衡量對市場波動的敏感度。預期市場上漲時,提高 β 值(買進高 β 股票)可放大上漲報酬。"},
+{ch:5,n:15,stem:"下列有關「資本資產評價模式(CAPM)」的敘述中,何者最正確?",opts:["目的為估計股價水準","β 估計值是公司報酬率除以無風險利率","假設投資人為風險中立者","以市場報酬率與無風險利率之差作為風險溢酬","β 值不會隨時間改變"],ans:3,exp:"CAPM:E(Ri) = Rf + βi × (Rm - Rf);市場風險溢酬 = Rm - Rf。\n(A) 估計必要報酬率;(B) β 是迴歸斜率;(C) 假設風險「趨避」;(E) β 會隨時間變動。"},
+{ch:5,n:16,stem:"預期市場報酬 10%,無風險利率 2%。X 股票:預期 14%、β=1.2;Y 股票:預期 16%、β=1.8。理論上應買入哪一種股票?",opts:["X,具 1.2% 預期超額報酬","X,具 2.4% 預期超額報酬","Y,具 16% 預期報酬","Y,具 0.4% 預期超額報酬","皆不應買入"],ans:1,exp:"用 CAPM 計算必要報酬率:\nX 必要報酬 = 2% + 1.2 × 8% = 11.6%;預期 14% > 11.6%,超額 = 2.4%(被低估,應買進)\nY 必要報酬 = 2% + 1.8 × 8% = 16.4%;預期 16% < 16.4%,超額 = -0.4%(被高估)"},
+{ch:5,n:17,stem:"關於股票預期報酬率之敘述,下列何者正確?",opts:["預期報酬率與「個別風險」呈正比","貝他係數愈大,預期報酬率愈高","市場風險貼水下降,所有股票預期報酬率上升","報酬率僅取決於過往盈餘表現"],ans:1,exp:"根據 CAPM,預期報酬率 = Rf + β × 風險溢酬,β 愈大則預期報酬率愈高。\n(A) 個別風險(非系統)可分散,不影響預期報酬;(C) 風險貼水下降使預期報酬率下降;(D) 預期報酬看未來而非過往。"},
+
+{ch:6,n:1,stem:"下列有關「還本期間」與「折現還本期間」的敘述中,何者為正確?",opts:["兩者皆考慮貨幣時間價值","折現率為正時,還本期間時間較短","折現還本期間計算較容易","折現還本期間可表現規模、還本期間則否","兩者愈長愈好"],ans:1,exp:"還本期間不考慮折現,故累積金額較快達標,時間較短;折現還本期間因現值較小,須更久才能回收。\n(A) 還本期間不考慮時間價值;(C) 折現還本較複雜;(D) 兩者皆無法表現規模;(E) 愈短愈好。"},
+{ch:6,n:2,stem:"下列何種變化會減少投資案的「淨現值(NPV)」?",opts:["資本成本下降","期初投入下降","營運成本下降","期末資產售價更高","工程期數拉長"],ans:4,exp:"期數拉長 → 現金流入延後 → 折現後現值降低 → NPV 下降。其他選項都會增加 NPV。"},
+{ch:6,n:3,stem:"投資案「淨現值(NPV)」等於 0 的折現率為",opts:["獲利指數(PI)","內部報酬率(IRR)","資本成本","平均會計報酬率(AAR)","修正後內部報酬率(MIRR)"],ans:1,exp:"「內部報酬率(IRR)」的定義:使 NPV = 0 的折現率。"},
+{ch:6,n:4,stem:"假如投資案的資本成本超過「IRR」,則該投資案",opts:["NPV<0","NPV>0","MIRR>IRR","IRR=0","折現還本期間=0"],ans:0,exp:"當折現率(資本成本)>IRR 時,NPV < 0,投資案應拒絕。"},
+{ch:6,n:5,stem:"下列哪些是「IRR」可能會產生的問題?\nI. 多重解 II. 錯失最有利的投資案 III. 未考慮貨幣時間價值",opts:["I","I、II","I、III","II、III","I、II、III"],ans:1,exp:"I 正確,當現金流量正負交錯,可能有多重 IRR;II 正確,互斥方案下 IRR 與 NPV 法可能衝突,選錯方案;III 錯,IRR 已考慮時間價值。"},
+{ch:6,n:6,stem:"「修正後 IRR(MIRR)」是針對 IRR 的哪一個項目作修正?",opts:["現金流量估計不佳","折現率每期相等","未考慮折現還本","NPV=0 過於保守","各期淨現金流入的再投資報酬率假設不合理"],ans:4,exp:"IRR 假設中間現金流量以 IRR 再投資,常與實際不符。MIRR 改以「資本成本」作為再投資報酬率,較合理。"},
+{ch:6,n:7,stem:"紅隼公司折現率為正,有一投資案期初投 200 百萬,4 年每年淨賺 50 百萬,何者描述正確?",opts:["NPV 為負","NPV 為零","PI 為零","IRR 會超過資本成本","折現還本期間少於 4 年"],ans:0,exp:"未折現總流入 = 50 × 4 = 200(剛好回本),折現後現值 < 200,故 NPV < 0,IRR < 折現率。"},
+{ch:6,n:8,stem:"下列哪些數據愈高,代表投資案愈有利?\nI. 折現還本期間 II. IRR III. NPV IV. 資本成本",opts:["I、II","I、III","II、III","I、II、III","I、II、III、IV"],ans:2,exp:"IRR、NPV 愈高愈有利;折現還本期間「愈短」愈好;資本成本(折現率)上升會降低 NPV,愈低愈好。"},
+{ch:6,n:9,stem:"下列有關「資本預算」的方法中,何者並未考慮貨幣時間價值?",opts:["折現還本期間","IRR","NPV","平均會計報酬率(AAR)","MIRR"],ans:3,exp:"AAR 是用會計利潤除以平均投資金額,完全不涉及折現,故未考慮時間價值。"},
+{ch:6,n:10,stem:"四個投資案皆風險相近、資本成本 12%。甲:NPV 為負接近零;乙:12% 折現 NPV 為零;丙:14% 折現 NPV 為零;丁:資本成本超過 IRR。應選何者?",opts:["甲","乙","丙","丁","四個皆不選"],ans:2,exp:"甲:NPV<0,拒絕\n乙:IRR=12%=資本成本,NPV=0,無利可圖\n丙:IRR=14% > 資本成本 12%,NPV>0 ✓\n丁:IRR<資本成本,NPV<0,拒絕"},
+{ch:6,n:11,stem:"關於 NPV 與 IRR 法之比較,下列敘述何者正確?",opts:["NPV>0 時,IRR 必小於資金成本","NPV 法假設現金流量以 IRR 再投資","互斥方案應優先選擇 IRR 較高者","NPV 法考慮貨幣時間價值,且符合股東財富極大化目標"],ans:3,exp:"(A) NPV>0 時 IRR > 資金成本(顛倒);(B) NPV 法假設以「資本成本」再投資,IRR 法才是以 IRR 再投資;(C) 互斥方案應優先選擇 NPV 較高者;(D) NPV 直接顯示股東財富增加金額。"},
+
+{ch:7,n:1,stem:"「資本預算」所要估計的是何種金額?",opts:["稅後淨利","利息及稅前純益","現金流量總額","現金流量增額","銷售金額增額"],ans:3,exp:"資本預算評估「投資案因執行所額外產生」的現金流量(增額),而非總額或會計利潤。"},
+{ch:7,n:2,stem:"下列何者不應影響投資案的現金流量?",opts:["低估期初評估費用","機器安裝費用高於帳面殘值","高估期末資產市值","低估壞帳金額","低估淨營運資金"],ans:0,exp:"期初的「評估費用」屬於沉沒成本(無論投資與否都已發生),不應計入投資案現金流量。"},
+{ch:7,n:3,stem:"下列有關評估投資案的敘述中,何者最正確?",opts:["攤銷費用不計入","僅考慮損益表科目","期末處分資產應以稅後現金流量計算","使用既有資產不需另計","增加的淨營運資金視為現金流入"],ans:2,exp:"處分資產若有資本利得需繳稅,應以「稅後」金額計算現金流量。\n(A) 攤銷有節稅效果應計入;(B) 也須考慮資產負債表(營運資金);(D) 既有資產有機會成本;(E) 增加淨營運資金為現金「流出」。"},
+{ch:7,n:4,stem:"從事「資本預算」時,下列何者應視為現金流量增加?",opts:["淨營運資金增加","折舊費用減少","研發費用增加","處分公司長期投資","購買不動產"],ans:3,exp:"處分長期投資 → 收回現金 → 視為現金流入。\n(A) 占用資金,流出;(B) 折舊減少使稅增加,現金流出;(C) 費用流出;(E) 投資支出流出。"},
+{ch:7,n:5,stem:"下列何者對公司「資本成本(Cost of Capital)」之敘述最正確?",opts:["以金額衡量,應為正值","以金額衡量,可正可負","以百分比衡量,應為正值","以百分比衡量,可正可負","是營運資金除以銷售額"],ans:2,exp:"資本成本以「百分比(報酬率)」表示,且必為正值(投資人提供資金必要求報酬)。"},
+{ch:7,n:6,stem:"下列有關「加權平均資本成本(WACC)」的敘述中,何者最正確?",opts:["固定與變動成本所計算的加權成本","公司債務利率與股權報酬率所計算的加權成本","業內與業外成本","流動與固定資產成本","利率、風險溢酬、總資產報酬率"],ans:1,exp:"WACC = (D/V) × Kd × (1-T) + (E/V) × Ke,以負債成本(債務利率)與權益成本(股權必要報酬)按市值權重加權。"},
+{ch:7,n:7,stem:"下列何者可提高投資案的「淨現值」?",opts:["機會成本升高","沉沒成本變小","借款利率升高","工程延誤,期數拉長","期初淨營運資金減少"],ans:4,exp:"期初淨營運資金減少 → 期初現金流出減少 → NPV 提高。\n(A) 流出增加;(B) 沉沒成本不影響評估;(C) 折現率升高,NPV 降;(D) 流入延後,NPV 降。"},
+{ch:7,n:8,stem:"比較兩個期數不同的擴充型計劃時,應選擇下列何者?",opts:["NPV 較大者","EAA 較高者","稅後淨利較高者","IRR 較高者","折舊費用較高者"],ans:1,exp:"期數不同的互斥方案,應使用「年金約當值法(EAA, Equivalent Annual Annuity)」將 NPV 換算成年金,再比較。EAA 較高者較佳。"},
+{ch:7,n:9,stem:"「敏感度分析」的主要目的是",opts:["追查執行責任","調查季節性變動對 NPV 影響","稽核現金流量差異","重要變數對淨現值的影響","分析市場佔有率影響"],ans:3,exp:"敏感度分析:在其他變數不變下,改變某一變數(如售價、銷量)觀察 NPV 變化,找出關鍵風險變數。"},
+{ch:7,n:10,stem:"下列何種特性對投資案有利?",opts:["公司具知名品牌","市場已充斥類似產品","議價能力低","成本較高","產品具季節性"],ans:0,exp:"知名品牌帶來定價力與顧客忠誠度,有利於投資案成功。其他選項皆是不利因素。"},
+{ch:7,n:11,stem:"「資本配額(Capital Rationing)」可以避免何種問題?",opts:["專業不足","顧客滿意度低","過度投資","侵蝕本業","產品季節性"],ans:2,exp:"資本配額限制投資總額,可避免管理者為追求規模而「過度投資」於 NPV 較低甚至為負的方案。"},
+{ch:7,n:12,stem:"下列有關資本預算的做法中,何者並不適當?",opts:["將投資分為改善、維持、獲利型態","與其他公司合資分擔風險","大型投資案以專案處理","利用責任中心制度","評估時不應考慮撤資的可能性"],ans:4,exp:"評估投資計畫時應考慮各種可能,包括「撤資選擇權(Abandonment Option)」,否則會低估方案彈性與價值。"},
+{ch:7,n:13,stem:"下列哪些因素有利於企業投資案的成功?\nI. 強力行銷通路 II. 市場已有多種類似商品\nIII. 知名品牌 IV. 公司資本充裕造成進入障礙",opts:["I、II","I、III","I、III、IV","II、IV","I、II、III、IV"],ans:2,exp:"I、III、IV 皆是競爭優勢;II 反而是不利因素(市場已飽和、競爭激烈)。"},
+{ch:7,n:14,stem:"「敏感度分析」(Sensitivity Analysis) 的主要目的是?",opts:["找出計畫在各種經濟情境下的加權平均報酬率","衡量某一特定變數改變時對 NPV 的影響","評估公司破產機率","決定計畫的最適資本結構"],ans:1,exp:"敏感度分析「一次只變動一個變數」(其他不變),觀察其對 NPV 的影響程度,找出最關鍵變數。"}
+];
+
+const CH_NAMES = {1:"財務管理概論",2:"財務報表與分析",3:"貨幣時間價值",4:"債券與股票",5:"報酬率與風險",6:"資本預算評估",7:"資本預算-現金流量"};
+const LETTERS = ["A","B","C","D","E"];
+const STORAGE_KEY = "fm_quiz_v1";
+
+let state = { mode: null, queue: [], idx: 0, answered: false };
+let progress = loadProgress();
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { history: {}, wrongIds: [], totalAnswered: 0, totalCorrect: 0 };
+}
+function saveProgress() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); } catch(e) {}
+}
+function qid(q) { return q.ch + "-" + q.n; }
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+function renderHome() {
+  const total = QUESTIONS.length;
+  const answered = progress.totalAnswered;
+  const correct = progress.totalCorrect;
+  const acc = answered > 0 ? Math.round(correct / answered * 100) : 0;
+  const wrongCount = progress.wrongIds.length;
+
+  let html = '<h1>📚 財管刷題</h1>';
+  html += '<div class="stat-grid">';
+  html += '<div class="stat-card"><div class="stat-label">總題目</div><div class="stat-num">' + total + '</div></div>';
+  html += '<div class="stat-card"><div class="stat-label">已作答</div><div class="stat-num">' + answered + '</div></div>';
+  html += '<div class="stat-card"><div class="stat-label">正確率</div><div class="stat-num">' + acc + '%</div></div>';
+  html += '<div class="stat-card"><div class="stat-label">錯題數</div><div class="stat-num">' + wrongCount + '</div></div>';
+  html += '</div>';
+
+  // 搜尋框
+  html += '<div class="search-wrap">';
+  html += '<input type="search" id="search-input" class="search-input" placeholder="🔍 搜尋題目關鍵字..." autocomplete="off">';
+  html += '<div id="search-results"></div>';
+  html += '</div>';
+
+  html += '<h2>選擇模式</h2>';
+  html += '<div class="mode-card" data-mode="chapter"><div class="mode-title">📖 依章節練習</div><div class="mode-desc">挑選一個章節依序練習</div></div>';
+
+  const savedCount = parseInt(localStorage.getItem('fm_random_count') || '30');
+  html += '<div class="mode-card-static"><div class="mode-title">🎲 隨機抽題</div>';
+  html += '<div class="mode-desc">從全部 ' + total + ' 題隨機洗牌出題</div>';
+  html += '<div class="count-row">';
+  html += '<span class="count-label">題數</span>';
+  html += '<div class="count-pills" id="count-pills">';
+  [10, 20, 30, 50, total].forEach(function(n) {
+    const label = n === total ? '全部' : n;
+    html += '<button class="count-pill ' + (n === savedCount ? 'active' : '') + '" data-count="' + n + '">' + label + '</button>';
+  });
+  html += '</div></div>';
+  html += '<button class="btn-primary" id="start-random" style="margin-top: 12px;">開始</button>';
+  html += '</div>';
+
+  html += '<div class="mode-card ' + (wrongCount === 0 ? 'disabled' : '') + '" data-mode="wrong">';
+  html += '<div class="mode-title">❌ 錯題複習' + (wrongCount > 0 ? ' (' + wrongCount + ')' : '') + '</div>';
+  html += '<div class="mode-desc">' + (wrongCount > 0 ? '只看你答錯過的題目' : '目前還沒有錯題') + '</div></div>';
+
+  if (answered > 0) {
+    html += '<button id="reset-btn" class="btn-secondary">清除所有紀錄</button>';
+  }
+
+  document.getElementById('app').innerHTML = html;
+
+  document.querySelectorAll('.mode-card').forEach(function(el) {
+    el.addEventListener('click', function() {
+      const mode = el.dataset.mode;
+      if (mode === 'wrong' && wrongCount === 0) return;
+      if (mode === 'chapter') renderChapterPicker();
+      else if (mode === 'wrong') {
+        const wrongQs = QUESTIONS.filter(function(q) { return progress.wrongIds.indexOf(qid(q)) !== -1; });
+        startQuiz('wrong', shuffle(wrongQs));
+      }
+    });
+  });
+
+  // 隨機題數切換
+  document.querySelectorAll('#count-pills .count-pill').forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      document.querySelectorAll('#count-pills .count-pill').forEach(function(p) { p.classList.remove('active'); });
+      pill.classList.add('active');
+      localStorage.setItem('fm_random_count', pill.dataset.count);
+    });
+  });
+
+  // 隨機抽題開始
+  const startRandomBtn = document.getElementById('start-random');
+  if (startRandomBtn) {
+    startRandomBtn.addEventListener('click', function() {
+      const activePill = document.querySelector('#count-pills .count-pill.active');
+      const count = activePill ? parseInt(activePill.dataset.count) : 30;
+      const picked = shuffle(QUESTIONS).slice(0, count);
+      startQuiz('random', picked);
+    });
+  }
+
+  const resetBtn = document.getElementById('reset-btn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function() {
+      if (confirm('確定要清除所有作答紀錄嗎?')) {
+        progress = { history: {}, wrongIds: [], totalAnswered: 0, totalCorrect: 0 };
+        saveProgress();
+        renderHome();
+      }
+    });
+  }
+
+  // 搜尋功能
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      const kw = searchInput.value.trim().toLowerCase();
+      if (kw === '') {
+        searchResults.innerHTML = '';
+        searchResults.style.display = 'none';
+        return;
+      }
+      const matches = QUESTIONS.filter(function(q) {
+        const hay = (q.stem + ' ' + q.opts.join(' ') + ' ' + q.exp).toLowerCase();
+        return hay.indexOf(kw) !== -1;
+      });
+      if (matches.length === 0) {
+        searchResults.innerHTML = '<div class="search-empty">找不到符合「' + escapeHtml(kw) + '」的題目</div>';
+        searchResults.style.display = 'block';
+        return;
+      }
+      let resHtml = '<div class="search-count">找到 ' + matches.length + ' 題</div>';
+      matches.slice(0, 50).forEach(function(q) {
+        const preview = q.stem.length > 60 ? q.stem.slice(0, 60) + '...' : q.stem;
+        const previewClean = preview.replace(/\n/g, ' ');
+        resHtml += '<div class="search-item" data-id="' + qid(q) + '">';
+        resHtml += '<div class="search-item-meta">第 ' + q.ch + ' 章 第 ' + q.n + ' 題</div>';
+        resHtml += '<div class="search-item-stem">' + highlightKeyword(previewClean, kw) + '</div>';
+        resHtml += '</div>';
+      });
+      if (matches.length > 50) {
+        resHtml += '<div class="search-empty">僅顯示前 50 題,請輸入更精確的關鍵字</div>';
+      }
+      searchResults.innerHTML = resHtml;
+      searchResults.style.display = 'block';
+
+      document.querySelectorAll('.search-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          const id = item.dataset.id;
+          const q = QUESTIONS.find(function(x) { return qid(x) === id; });
+          if (q) renderPreview(q);
+        });
+      });
+    });
+  }
+}
+
+function highlightKeyword(text, kw) {
+  const escaped = escapeHtml(text);
+  if (!kw) return escaped;
+  const escKw = escapeHtml(kw);
+  const regex = new RegExp(escKw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+  return escaped.replace(regex, function(m) { return '<mark>' + m + '</mark>'; });
+}
+
+function renderPreview(q) {
+  const status = progress.history[qid(q)];
+  let statusBadge = '';
+  if (status === 'correct') statusBadge = '<span class="badge badge-ok">已答對</span>';
+  else if (status === 'wrong') statusBadge = '<span class="badge badge-no">曾答錯</span>';
+
+  let optsHtml = '';
+  for (let i = 0; i < q.opts.length; i++) {
+    const isAns = i === q.ans;
+    optsHtml += '<div class="opt ' + (isAns ? 'correct' : '') + '" style="cursor: default;">';
+    optsHtml += '<span class="opt-key">' + LETTERS[i] + '.</span>' + escapeHtml(q.opts[i]);
+    optsHtml += '</div>';
+  }
+
+  let html = '<button id="back-btn" class="btn-back">← 返回首頁</button>';
+  html += '<div class="meta-row"><span>第 ' + q.ch + ' 章 第 ' + q.n + ' 題 · ' + CH_NAMES[q.ch] + '</span>' + statusBadge + '</div>';
+  html += '<div class="q-card">';
+  html += '<div class="q-stem">' + escapeHtml(q.stem).replace(/\n/g, '<br>') + '</div>';
+  html += '<div>' + optsHtml + '</div>';
+  html += '<div class="explain"><b>正確答案:' + LETTERS[q.ans] + '</b>';
+  html += escapeHtml(q.exp).replace(/\n/g, '<br>');
+  html += '</div>';
+  html += '</div>';
+
+  document.getElementById('app').innerHTML = html;
+  document.getElementById('back-btn').addEventListener('click', renderHome);
+  window.scrollTo(0, 0);
+}
+
+function renderChapterPicker() {
+  let html = '<button id="back-btn" class="btn-back">← 返回</button>';
+  html += '<h1>選擇章節</h1>';
+  for (let ch = 1; ch <= 7; ch++) {
+    const chQs = QUESTIONS.filter(function(q) { return q.ch === ch; });
+    const answered = chQs.filter(function(q) { return progress.history[qid(q)]; }).length;
+    const correct = chQs.filter(function(q) { return progress.history[qid(q)] === 'correct'; }).length;
+    html += '<div class="mode-card" data-ch="' + ch + '">';
+    html += '<div class="mode-title">第 ' + ch + ' 章 · ' + CH_NAMES[ch] + '</div>';
+    html += '<div class="mode-desc">' + chQs.length + ' 題 · 已做 ' + answered + '/' + chQs.length + ' · 正確 ' + correct + '</div>';
+    html += '</div>';
+  }
+  document.getElementById('app').innerHTML = html;
+
+  document.getElementById('back-btn').addEventListener('click', renderHome);
+  document.querySelectorAll('.mode-card').forEach(function(el) {
+    el.addEventListener('click', function() {
+      const ch = parseInt(el.dataset.ch);
+      const chQs = QUESTIONS.filter(function(q) { return q.ch === ch; });
+      startQuiz('chapter-' + ch, chQs);
+    });
+  });
+}
+
+function startQuiz(mode, queue) {
+  if (queue.length === 0) return;
+  state = { mode: mode, queue: queue, idx: 0, answered: false };
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = state.queue[state.idx];
+  const total = state.queue.length;
+  const progPct = Math.round(state.idx / total * 100);
+
+  let modeLabel = '';
+  if (state.mode === 'random') modeLabel = '隨機抽題';
+  else if (state.mode === 'wrong') modeLabel = '錯題複習';
+  else if (state.mode.indexOf('chapter-') === 0) modeLabel = '第 ' + q.ch + ' 章';
+
+  let optsHtml = '';
+  for (let i = 0; i < q.opts.length; i++) {
+    optsHtml += '<button class="opt" data-idx="' + i + '">';
+    optsHtml += '<span class="opt-key">' + LETTERS[i] + '.</span>' + escapeHtml(q.opts[i]);
+    optsHtml += '</button>';
+  }
+
+  let html = '<button id="back-btn" class="btn-back">← 返回首頁</button>';
+  html += '<div class="meta-row"><span>' + modeLabel + ' · 第 ' + (state.idx + 1) + ' / ' + total + ' 題</span><span>第 ' + q.ch + ' 章 第 ' + q.n + ' 題</span></div>';
+  html += '<div class="progress-bar"><div class="progress-fill" style="width: ' + progPct + '%"></div></div>';
+  html += '<div class="q-card">';
+  html += '<div class="q-stem">' + escapeHtml(q.stem).replace(/\n/g, '<br>') + '</div>';
+  html += '<div id="opts">' + optsHtml + '</div>';
+  html += '<div id="explain-area"></div>';
+  html += '<div id="btn-area"></div>';
+  html += '</div>';
+
+  document.getElementById('app').innerHTML = html;
+
+  document.getElementById('back-btn').addEventListener('click', function() {
+    if (state.answered || confirm('離開將失去這次練習進度,確定要返回?')) {
+      renderHome();
+    }
+  });
+
+  document.querySelectorAll('#opts .opt').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (state.answered) return;
+      onAnswer(parseInt(btn.dataset.idx));
+    });
+  });
+}
+
+function onAnswer(chosen) {
+  const q = state.queue[state.idx];
+  const correct = chosen === q.ans;
+  state.answered = true;
+
+  const id = qid(q);
+  const wasAnswered = !!progress.history[id];
+  const prevCorrect = progress.history[id] === 'correct';
+  progress.history[id] = correct ? 'correct' : 'wrong';
+  if (!wasAnswered) {
+    progress.totalAnswered++;
+    if (correct) progress.totalCorrect++;
+  } else {
+    if (correct && !prevCorrect) progress.totalCorrect++;
+    if (!correct && prevCorrect) progress.totalCorrect--;
+  }
+  if (correct) {
+    progress.wrongIds = progress.wrongIds.filter(function(x) { return x !== id; });
+  } else {
+    if (progress.wrongIds.indexOf(id) === -1) progress.wrongIds.push(id);
+  }
+  saveProgress();
+
+  document.querySelectorAll('#opts .opt').forEach(function(btn, i) {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === chosen) btn.classList.add('wrong');
+  });
+
+  let expHtml = '<div class="explain">';
+  expHtml += '<b>' + (correct ? '✓ 答對了' : '✗ 答錯了') + ' · 正確答案:' + LETTERS[q.ans] + '</b>';
+  expHtml += escapeHtml(q.exp).replace(/\n/g, '<br>');
+  expHtml += '</div>';
+  document.getElementById('explain-area').innerHTML = expHtml;
+
+  const isLast = state.idx === state.queue.length - 1;
+  document.getElementById('btn-area').innerHTML = '<button id="next-btn" class="btn-primary">' + (isLast ? '完成' : '下一題 →') + '</button>';
+  document.getElementById('next-btn').addEventListener('click', function() {
+    if (isLast) renderComplete();
+    else {
+      state.idx++;
+      state.answered = false;
+      renderQuestion();
+      window.scrollTo(0, 0);
+    }
+  });
+}
+
+function renderComplete() {
+  const total = state.queue.length;
+  const correctCount = state.queue.filter(function(q) { return progress.history[qid(q)] === 'correct'; }).length;
+  const acc = Math.round(correctCount / total * 100);
+
+  let html = '<div class="complete">';
+  html += '<div class="complete-title">🎉 完成這輪練習!</div>';
+  html += '<div class="stat-grid" style="max-width: 320px; margin: 0 auto 20px;">';
+  html += '<div class="stat-card"><div class="stat-label">總題數</div><div class="stat-num">' + total + '</div></div>';
+  html += '<div class="stat-card"><div class="stat-label">答對</div><div class="stat-num">' + correctCount + '</div></div>';
+  html += '<div class="stat-card"><div class="stat-label">正確率</div><div class="stat-num">' + acc + '%</div></div>';
+  html += '<div class="stat-card"><div class="stat-label">答錯</div><div class="stat-num">' + (total - correctCount) + '</div></div>';
+  html += '</div>';
+  html += '<button id="home-btn" class="btn-primary">回到首頁</button>';
+  html += '</div>';
+
+  document.getElementById('app').innerHTML = html;
+  document.getElementById('home-btn').addEventListener('click', renderHome);
+}
+
+renderHome();
+</script>
+</body>
+</html>

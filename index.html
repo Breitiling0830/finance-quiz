@@ -354,123 +354,8 @@
     font-weight: 600;
     margin-bottom: 16px;
   }
-
-  .scan-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 12px;
-  }
-  .scan-file {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    pointer-events: none;
-  }
-  .scan-preview {
-    width: 100%;
-    border-radius: 10px;
-    border: 1px solid #e8e6df;
-    background: #f5f5f0;
-    display: block;
-    margin-top: 10px;
-  }
-  .scan-canvas-wrap {
-    position: relative;
-    margin-top: 10px;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid #e8e6df;
-    background: #f5f5f0;
-    touch-action: none;
-  }
-  #scan-crop-canvas {
-    width: 100%;
-    display: block;
-  }
-  .scan-status {
-    margin-top: 10px;
-    padding: 10px 12px;
-    border-radius: 10px;
-    background: #f5f5f0;
-    color: #555;
-    font-size: 13px;
-    line-height: 1.6;
-  }
-  .scan-result-card {
-    background: #ffffff;
-    border: 1px solid #e8e6df;
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 10px;
-  }
-  .scan-result-head {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    align-items: flex-start;
-    margin-bottom: 8px;
-    font-size: 12px;
-    color: #888;
-  }
-  .scan-answer {
-    font-size: 16px;
-    font-weight: 700;
-    color: #085041;
-    margin: 8px 0;
-  }
-  .scan-answer-option {
-    padding: 10px 12px;
-    border-radius: 10px;
-    background: #e1f5ee;
-    color: #085041;
-    line-height: 1.6;
-    margin-bottom: 8px;
-  }
-  .scan-candidates {
-    display: grid;
-    gap: 6px;
-    margin-top: 10px;
-  }
-  .scan-candidate {
-    width: 100%;
-    text-align: left;
-    padding: 9px 10px;
-    border-radius: 9px;
-    border: 1px solid #e8e6df;
-    background: #ffffff;
-    color: #1f1f1d;
-    font-family: inherit;
-    font-size: 13px;
-    line-height: 1.45;
-  }
-  .ocr-textarea {
-    width: 100%;
-    min-height: 120px;
-    padding: 10px 12px;
-    border: 1px solid #e8e6df;
-    border-radius: 10px;
-    background: #ffffff;
-    color: #1f1f1d;
-    font-family: inherit;
-    font-size: 13px;
-    line-height: 1.6;
-    resize: vertical;
-    margin-top: 10px;
-  }
-
   @media (prefers-color-scheme: dark) {
     body { background: #1a1a18; color: #f0efe9; }
-
-    .scan-preview, .scan-canvas-wrap { background: #1a1a18; border-color: #3a3936; }
-    .scan-status { background: #1a1a18; color: #b5b3ac; }
-    .scan-result-card { background: #28272a; border-color: #3a3936; }
-    .scan-answer { color: #9fe1cb; }
-    .scan-answer-option { background: #04342c; color: #9fe1cb; }
-    .scan-candidate { background: #28272a; border-color: #3a3936; color: #f0efe9; }
-    .ocr-textarea { background: #28272a; border-color: #3a3936; color: #f0efe9; }
-
     .stat-card, .mode-card, .q-card, .mode-card-static { background: #28272a; border-color: #3a3936; }
     .exam-tab { background: #28272a; border-color: #3a3936; color: #999; }
     .exam-tab.active { background: #378add; color: #ffffff; border-color: #378add; }
@@ -501,8 +386,6 @@
 </head>
 <body>
 <div id="app"></div>
-
-<script src="vendor/tesseract/tesseract.min.js"></script>
 
 <script>
 // ===================================================================
@@ -690,8 +573,8 @@ const FINAL_QUESTIONS = [
 {exam:"final",ch:10,n:1,stem:"銀行放款給一般企業,並未要求提供擔保品,此種授信工具為下列何者?",opts:["信用狀押匯","信用額度","票據循環性融通","有價證券質押放款","中長期聯合貸款"],ans:1,exp:"「信用額度(Line of Credit)」是銀行依企業信用狀況核給的無擔保借款上限,企業可在額度內循環動用,不需提供擔保品。"},
 {exam:"final",ch:10,n:2,stem:"由一或兩家銀行主導放款業務,另外數家銀行依約定之比例共同放款,此種方式稱為",opts:["互保貸款","專案融資","聯合貸款","銀行間拆放款","循環性融通"],ans:2,exp:"「聯合貸款(Syndicated Loan)」由主辦銀行籌組銀行團,各參貸銀行依約定比例共同對單一借款人放款,以分散大額授信風險。"},
 {exam:"final",ch:10,n:3,stem:"下列哪一項並不屬於銀行借款給企業時的「5P」原則?",opts:["Prediction:企業主之預測能力","People:企業主之個性及能力","Purpose:借款之目的","Payments:償還借款之來源","Perspective:企業經營之展望"],ans:0,exp:"授信 5P 原則為:People(借款戶)、Purpose(資金用途)、Payments(還款來源)、Protection(債權保障)、Perspective(授信展望)。「Prediction」不在其中。"},
-{exam:"final",ch:10,n:4,stem:"「銀行與公司簽約,在一定期間內由公司依本身需求發行票據,且銀行為該票據作信用保證,以便順利取得所需資金。」此為何種融資工具?",opts:["中長期貸款(Term Loans)","可轉讓定期存單(CDs)","票據發行融通(NIFs)","擔保票據發行融通(SNIFs)","循環包銷融通(RUFs)"],ans:3,exp:"正確答案為 (D) 擔保票據發行融通(SNIFs)。題目強調「銀行為該票據作信用保證」,因此不只是一般票據發行融通(NIFs),而是有銀行提供擔保的 SNIFs。"},
-{exam:"final",ch:10,n:5,stem:"K 銀行允諾借款 $5 億給 X 公司,X 公司須開出本票(並不在市場上流通),每半年還款後銀行再行放款,此種方式為",opts:["有價證券質押貸款","信用額度","票據發行融通(NIFs)","擔保票據發行融通(SNIFs)","循環包銷融通(RUFs)"],ans:4,exp:"正確答案為 (E) 循環包銷融通(RUFs)。題目重點在銀行承諾一定額度,公司以本票方式取得資金,還款後可再循環動用,屬於可反覆使用的包銷/授信安排。"},
+{exam:"final",ch:10,n:4,stem:"「銀行與公司簽約,在一定期間內由公司依本身需求發行票據,且銀行為該票據作信用保證,以便順利取得所需資金。」此為何種融資工具?",opts:["中長期貸款(Term Loans)","可轉讓定期存單(CDs)","票據發行融通(NIFs)","擔保票據發行融通(SNIFs)","循環包銷融通(RUFs)"],ans:3,exp:"擔保票據發行融通(SNIFs, Standby Note Issuance Facilities)是在票據發行融通架構下,由銀行為公司發行的票據提供信用保證或備用承諾,使公司能順利在市場籌措資金。本題敘述中特別提到「銀行為該票據作信用保證」,因此正確答案為 (D) 擔保票據發行融通(SNIFs)。"},
+{exam:"final",ch:10,n:5,stem:"K 銀行允諾借款 $5 億給 X 公司,X 公司須開出本票(並不在市場上流通),每半年還款後銀行再行放款,此種方式為",opts:["有價證券質押貸款","信用額度","票據發行融通(NIFs)","擔保票據發行融通(SNIFs)","循環包銷融通(RUFs)"],ans:4,exp:"循環包銷融通(RUFs, Revolving Underwriting Facilities)是銀行或金融機構承諾在一定期間內,對公司發行的短期票據提供循環性的包銷或融資安排。題目提到每半年還款後銀行再行放款,具有循環融通性質,因此正確答案為 (E) 循環包銷融通(RUFs)。"},
 {exam:"final",ch:10,n:6,stem:"銀行辦理中長期授信,為確保債權,常於契約中訂定「消極擔保條款(Negative Pledge Clause)」,其主要意義為何?",opts:["要求借款人必須提供額外的不動產設定抵押","借款人承諾在貸款期間內,不得將其財產再設定負擔予第三人,以保障本行受償順位","要求借款人必須維持盈餘不分配","約定借款人若違約,銀行可逕行處分其所有資產"],ans:1,exp:"消極擔保條款是一種「不作為」承諾:借款人保證不將財產再向其他債權人設定擔保,以維持本行的受償順位。它不要求另提抵押(那是積極擔保)。"},
 {exam:"final",ch:10,n:7,stem:"下列何者對「專案融資」之敘述為正確?",opts:["政府所主導的投資案才能申請「專案融資」","最大優點為沒有政治風險","最大缺點為參與公司無法讓投資案的風險獨立","借款機構通常會要求掌控投資案的資產與收入","投資案興建時若因困難產生額外成本,借款機構可向參與者要求賠償"],ans:3,exp:"專案融資(Project Financing)以「專案本身的現金流與資產」作為還款來源與擔保,借款機構通常要求掌控專案的資產與收入。(A) 民間案也可;(B) 仍有政治風險;(C) 優點正是讓風險獨立(無追索或有限追索);(E) 通常為無追索,不能向母公司求償。"},
 {exam:"final",ch:10,n:8,stem:"恆星公司向銀行貸款 $1,000 萬,為期一年,年利率 3%,依約定必須有補償性存款 $100 萬,年息為 1%,則該公司的借款實質利率為",opts:["2.00%","2.90%","3.22%","3.55%","4.00%"],ans:2,exp:"利息支出 = 1,000 萬 × 3% = 30 萬\n補償性存款利息收入 = 100 萬 × 1% = 1 萬\n實際可動用金額 = 1,000 − 100 = 900 萬\n實質利率 = (30 − 1) / 900 = 29 / 900 ≈ 3.22%"},
@@ -731,7 +614,7 @@ const FINAL_QUESTIONS = [
 
 // ---------- 第 12 章 營運資金 ----------
 {exam:"final",ch:12,n:1,stem:"下列何者對「淨營運資金」的定義最正確?",opts:["應收帳款 + 應付帳款 − 存貨","應收帳款 + 存貨 − 短期貸款","流動資產 − 流動負債","應收帳款 − 應付帳款","流動資產 − 流動負債 + 當期盈餘"],ans:2,exp:"淨營運資金(Net Working Capital)= 流動資產 − 流動負債,衡量公司可運用的短期資金淨額。"},
-{exam:"final",ch:12,n:2,stem:"下列何者將增加公司的營運資金?",opts:["存貨增加","應收帳款增加","增加員工","有價證券減少","應付帳款減少"],ans:3,exp:"正確答案為 (D) 有價證券減少。此題所稱營運資金偏向企業實際投入日常營運的資金;有價證券減少通常表示資金由短期投資轉為營運使用,因此會增加營運資金。"},
+{exam:"final",ch:12,n:2,stem:"下列何者將增加公司的營運資金?",opts:["存貨增加","應收帳款增加","增加員工","有價證券減少","應付帳款減少"],ans:3,exp:"營運資金通常指企業投入營運所需的流動資金。當有價證券減少時,代表可供短期運用的金融資產降低,企業可能需要增加其他營運資金來支應營運需求,因此本題正確答案為 (D) 有價證券減少。"},
 {exam:"final",ch:12,n:3,stem:"某公司年底時收回大筆的應收帳款,則該公司的流動比率及速動比率會如何變化?",opts:["流動比率下降、速動比率增加","流動比率增加、速動比率下降","流動比率及速動比率皆增加","流動比率及速動比率皆下降","流動比率及速動比率不變"],ans:4,exp:"收回應收帳款是「應收帳款↓、現金↑」,兩者都是流動資產(也都屬速動資產),總額不變。故流動比率與速動比率皆「不變」。"},
 {exam:"final",ch:12,n:4,stem:"公司以現金購買商品,商品出售轉為應收帳款,再由應收帳款收回現金,此種過程稱為",opts:["會計循環","營業循環","商業循環","現金循環","信用循環"],ans:1,exp:"「營業循環(Operating Cycle)」指從購入存貨、出售形成應收帳款、到收回現金的完整流程,= 存貨轉換期間 + 應收帳款收現期間。"},
 {exam:"final",ch:12,n:5,stem:"下列何者對企業營運週期的定義最正確?",opts:["存貨轉換期加上應收帳款期","存貨轉換期加上應付帳款期","存貨轉換期加上現金轉換期","應付帳款期加上應收帳款期","採購期加上存貨轉換期"],ans:0,exp:"營運(營業)週期 = 存貨轉換期間 + 應收帳款收現期間。若再扣掉應付帳款付現期間,則為「現金轉換循環」。"},
@@ -741,7 +624,7 @@ const FINAL_QUESTIONS = [
 {exam:"final",ch:12,n:9,stem:"企業以存貨質押取得貸款,金融機構以編製存貨序號的方式進行控管,此種作法屬於下列何者?",opts:["流動存貨質押","信託收據存貨貸款","倉單存貨貸款","JIT 存貨管理","MRP 存貨管理"],ans:1,exp:"信託收據存貨貸款(Trust Receipt Loan):借款人以信託收據方式持有特定可辨識(編號)的存貨,出售後須將價款優先償還貸款,金融機構藉序號控管特定存貨。"},
 {exam:"final",ch:12,n:10,stem:"供應商提供付款條件「1/20,n/60」係指?",opts:["20 天內付款享有 1% 折扣,付款期為 60 天","60 天內付款享有 5% 折扣","60 天內每 20 天付款一次","20 天內付款享有較高的折扣,21~60 天每天減少折扣 0.1%","貨到付款 20%,其餘 60 天內付清"],ans:0,exp:"信用條件「1/20, n/60」解讀:20 天內付款可享 1% 現金折扣;若不取折扣,則最遲須於 60 天內付清全額。"},
 {exam:"final",ch:12,n:11,stem:"應收帳款承購具有「追索權(Recourse)」係指",opts:["承購者不須通知客戶,到期時直接收款","債權人必須提供不動產抵押給承購者","債務人違約,債權人可向承購者索賠","債務人違約,承購者可向債權人索賠","債務人違約,承購者可要求保險業者理賠"],ans:3,exp:"「有追索權」的應收帳款承購:若應收帳款的債務人(客戶)違約不付款,承購商(Factor)可「回頭向出售帳款的債權人(原賣方)索賠」,信用風險仍由原債權人承擔。"},
-{exam:"final",ch:12,n:12,stem:"「應收帳款承購商(Factor)」對「有追索權(With Recourse)」的業務中,承作下列哪些工作?\nI. 保證應收帳款債務人之信用 II. 承擔應收帳款債務人之信用風險\nIII. 應收帳款催收服務 IV. 提供融資應收帳款之債權人",opts:["I、II","I、II、III","II、III、IV","III、IV","I、II、III、IV"],ans:4,exp:"正確答案為 (E) I、II、III、IV。應收帳款承購商(Factor)通常會提供債務人信用調查與保證、承擔或管理信用風險、協助催收帳款,並可提供應收帳款融資。"},
+{exam:"final",ch:12,n:12,stem:"「應收帳款承購商(Factor)」對「有追索權(With Recourse)」的業務中,承作下列哪些工作?\nI. 保證應收帳款債務人之信用 II. 承擔應收帳款債務人之信用風險\nIII. 應收帳款催收服務 IV. 提供融資應收帳款之債權人",opts:["I、II","I、II、III","II、III、IV","III、IV","I、II、III、IV"],ans:4,exp:"應收帳款承購商(Factor)的業務可包含信用保證、承擔信用風險、應收帳款催收服務,以及提供以應收帳款為基礎的融資。依本題答案設定,四項皆屬承購商可能承作的業務,因此正確答案為 (E) I、II、III、IV。"},
 {exam:"final",ch:12,n:13,stem:"當企業決定「放寬」信用標準時,通常會導致下列哪種結果?",opts:["應收帳款週轉率上升","現金循環天數必然縮短","存貨轉換期間縮短","帳齡分析表中的逾期帳款比例下降","銷貨收入可能增加,但壞帳損失風險也隨之上升"],ans:4,exp:"放寬信用標準會吸引更多客戶賒購,銷貨收入可能增加;但同時也接受信用較差的客戶,壞帳損失與逾期帳款風險隨之上升。(A) 週轉率會下降;(D) 逾期比例會上升。"},
 {exam:"final",ch:12,n:14,stem:"下列有關現金管理的作法中,何者最正確?",opts:["現金收支與記帳應由同一人負責","編製現金預算時必須納入折舊費用","業務人員收到客戶即期支票,應自行存入銀行","若現金交易頻繁,應以收銀機或電腦記錄交易","保留愈多的現金,對公司愈有利"],ans:3,exp:"現金交易頻繁時,應以收銀機或電腦完整記錄交易以利控管。(A) 應「分工」以收內部牽制之效;(B) 折舊是非現金費用,不列入現金預算;(C) 支票應交財務部門統一處理;(E) 現金過多會閒置、降低資金效率。"},
 {exam:"final",ch:12,n:15,stem:"企業編製應收帳款的天數與分布狀況,為下列何種報告?",opts:["現金流量表","帳齡分析表","股東權益變動表","資本預算估計表","會計師查核報告書"],ans:1,exp:"「帳齡分析表(Aging Schedule)」按應收帳款積欠天數分組(如 30 天內、31~60 天…),呈現各帳款的逾期分布,協助評估收款績效與壞帳風險。"},
@@ -754,7 +637,7 @@ const FINAL_QUESTIONS = [
 // ---------- 第 13 章 財務規劃 ----------
 {exam:"final",ch:13,n:1,stem:"「財務規劃」是公司針對某段期間內的哪一個事項進行事前計劃?",opts:["調整資本結構","資金需求","人事結構及費用","處分資產","選任會計師"],ans:1,exp:"財務規劃的核心是預估未來某期間的「資金需求」——預測營運與投資所需資金,並事先安排資金來源。"},
 {exam:"final",ch:13,n:2,stem:"下列何者對「財務規劃」的影響最大?",opts:["流動資產佔總資產的比率","折舊費可否加速","銷售的變動","會計原則的變動","董事會的結構"],ans:2,exp:"財務規劃通常以「銷售預測」為起點,多數資產、負債與盈餘項目都隨銷售變動,故「銷售的變動」對財務規劃影響最大。"},
-{exam:"final",ch:13,n:3,stem:"某公司預計下一年度的獲利狀況不變,則下列哪些項目是進行「財務規劃」時應考慮的事項?\nI. 考慮所採用的會計方法 II. 對總體環境做假設或預估\nIII. 考慮資產需求 IV. 進行銷售預測",opts:["I、II","I、II、IV","II、IV","II、III、IV","I、II、III、IV"],ans:3,exp:"正確答案為 (D) II、III、IV。財務規劃通常以銷售預測為起點,並對總體環境做假設,再估計資產需求與資金需求;會計方法並非本題進行財務規劃時的主要考量。"},
+{exam:"final",ch:13,n:3,stem:"某公司預計下一年度的獲利狀況不變,則下列哪些項目是進行「財務規劃」時應考慮的事項?\nI. 考慮所採用的會計方法 II. 對總體環境做假設或預估\nIII. 考慮資產需求 IV. 進行銷售預測",opts:["I、II","I、II、IV","II、IV","II、III、IV","I、II、III、IV"],ans:3,exp:"財務規劃的重點在於對未來做預估與安排,通常應考慮總體環境假設或預估(II)、資產需求(III),以及作為規劃起點的銷售預測(IV)。會計方法(I)並非本題所問的主要規劃事項,因此正確答案為 (D) II、III、IV。"},
 {exam:"final",ch:13,n:4,stem:"在正常情況下,預期公司銷售金額將大幅上升,則「額外資金需求(AFN)」將 ___,通常須進行 ___。",opts:["增加,融資","增加,證券投資","減少,融資","減少,證券投資","不變,合資"],ans:0,exp:"銷售大幅成長 → 須增添資產(存貨、應收、固定資產)→ 所需資金超過自發性負債與保留盈餘所能支應 → AFN 增加,公司須對外「融資」。"},
 {exam:"final",ch:13,n:5,stem:"某公司預計下一年度的獲利狀況不變,則下列哪些活動會使其「額外資金需求(AFN)」增加?\nI. 調高現金股利發放比率 II. 發放股票股利\nIII. 延展向銀行的借款 IV. 買回庫藏股",opts:["I、II","I、IV","I、II、IV","II、III","II、III、IV"],ans:1,exp:"I 調高現金股利 → 保留盈餘減少 → AFN 增加;IV 買回庫藏股 → 動用現金、權益減少 → AFN 增加。II 發股票股利不動用現金;III 延展借款是維持既有資金,不增加 AFN。"},
 {exam:"final",ch:13,n:6,stem:"下列有關「額外資金需求(AFN)」估計項目的程序,何者最正確?\nI. 估計資產負債表 II. 估計損益表 III. 估計 AFN IV. 融資回饋",opts:["I、II、III、IV","I、III、II、IV","II、I、III、IV","II、I、IV、III","II、III、I、IV"],ans:2,exp:"AFN 估計程序:先估計損益表(II,得出保留盈餘)→ 估計資產負債表(I,得出資產與自發性負債)→ 算出 AFN(III)→ 進行融資回饋調整(IV)。"},
@@ -763,7 +646,7 @@ const FINAL_QUESTIONS = [
 {exam:"final",ch:13,n:9,stem:"其他條件不變,下列有關「額外資金需求(AFN)」的敘述中,何者最正確?",opts:["資產與銷售的關聯性愈高,則銷售增加會使 AFN 下降","銷售增加時,存貨若以非線性關係增加,將使 AFN 下降","流動負債隨銷售變動的關聯性愈高,則銷售增加會使 AFN 上升","公司下一年度的純益率若上升,會使 AFN 下降","公司若調高下一年度的現金股利支付比率,會使 AFN 下降"],ans:3,exp:"純益率上升 → 保留盈餘增加 → 內部資金增加 → AFN 下降。(A) 資產關聯性高,銷售增加時所需資產更多,AFN 上升;(C) 自發性負債關聯性高,可支應更多資金,AFN 下降;(E) 調高股利使保留盈餘減少,AFN 上升。"},
 {exam:"final",ch:13,n:10,stem:"公司以線性公式計算「額外資金需求(AFN)」時,下列哪些原因會使計算結果產生偏差?\nI. 存貨以批量方式進貨 II. 負債比率很低\nIII. 公司更換法人股東 IV. 成本佔銷售之比率隨銷售成長下降",opts:["I、II","I、IV","I、II、IV","II、III、IV","I、II、III、IV"],ans:1,exp:"線性 AFN 公式假設各項目與銷售「等比例(線性)」變動。I 存貨批量進貨呈階梯式、非線性;IV 成本比率隨銷售下降,代表規模經濟,亦非線性。兩者都會使線性公式產生偏差。II、III 與線性假設無關。"},
 {exam:"final",ch:13,n:11,stem:"去年,葛丁豪公司的銷貨額是 250 百萬元,固定資產 75 百萬元,其產能利用率為 80%。如果該公司的產能利用率達到 100%,它能支持的最大銷貨額是多少?",opts:["361.8 百萬元","328.1 百萬元","344.5 百萬元","312.5 百萬元","379.8 百萬元"],ans:3,exp:"全產能銷貨額 = 目前銷貨額 ÷ 產能利用率\n= 250 ÷ 80% = 312.5 百萬元\n(現有固定資產在 100% 產能下最多可支持 312.5 百萬元的銷貨)"},
-{exam:"final",ch:13,n:12,stem:"將來公司本年度銷貨收入為 $1,000,000,預計明年銷貨金額成長 20%。已知資產對銷貨為 60%,自發性負債對銷貨為 10%,稅後純益率 5%,股利發放率為 40%,若採全產能運作,請計算其明年之額外資金需求(AFN)為多少?",opts:["$80,000","$36,000","$64,000","$80,000","$84,000"],ans:2,exp:"正確答案為 (C) $64,000。銷貨增加額 ΔS = 1,000,000 × 20% = 200,000;明年銷貨 = 1,200,000。AFN = (資產/銷貨)×ΔS − (自發性負債/銷貨)×ΔS − (明年銷貨 × 純益率 × 保留比率) = 60%×200,000 − 10%×200,000 − 1,200,000×5%×(1−40%) = 120,000 − 20,000 − 36,000 = $64,000。"},
+{exam:"final",ch:13,n:12,stem:"將來公司本年度銷貨收入為 $1,000,000,預計明年銷貨金額成長 20%。已知資產對銷貨為 60%,自發性負債對銷貨為 10%,稅後純益率 5%,股利發放率為 40%,若採全產能運作,請計算其明年之額外資金需求(AFN)為多少?",opts:["$80,000","$36,000","$64,000","$80,000","$84,000"],ans:2,exp:"銷貨增加額 ΔS = 1,000,000 × 20% = 200,000;明年銷貨 = 1,200,000\nAFN =(資產/銷貨)×ΔS −(自發性負債/銷貨)×ΔS −(明年銷貨 × 純益率 × 保留比率)\n= 60%×200,000 − 10%×200,000 − 1,200,000×5%×(1−40%)\n= 120,000 − 20,000 − 36,000 = $64,000\n因此正確答案為 (C) $64,000。"},
 
 // ---------- 第 14 章 重組與併購 ----------
 {exam:"final",ch:14,n:1,stem:"當 A、B 兩家公司合併,B 公司之法人人格消滅,其權利義務全部由存續公司 A 概括承受,此種合併稱為",opts:["吸收併購","惡意併購","創設併購","垂直式併購","水平式併購"],ans:0,exp:"「吸收合併(Statutory Merger)」:合併後僅一家公司存續,另一家(B)消滅,其權利義務由存續公司(A)概括承受。若兩家都消滅、另設新公司則為「創設合併」。"},
@@ -857,384 +740,6 @@ function escapeHtml(s) {
   });
 }
 
-
-const OCR_CONFIG = {
-  workerPath: 'vendor/tesseract/worker.min.js',
-  corePath: 'vendor/tesseract/tesseract-core-simd.wasm.js',
-  langPath: 'vendor/tesseract',
-  gzip: false
-};
-let scanState = { imageDataUrl: '', processedDataUrl: '', rotation: 0, cropMode: false, cropRect: null, dragStart: null, results: [], ocrText: '' };
-let questionIndexCache = null;
-let ocrWorkerPromise = null;
-
-function buildQuestionIndex() {
-  if (questionIndexCache) return questionIndexCache;
-  questionIndexCache = QUESTIONS.map(function (q) {
-    const answerLetter = LETTERS[q.ans] || '?';
-    const answerText = q.opts[q.ans] || '';
-    const sourceText = [q.stem].concat(q.opts).join(' ');
-    return {
-      q: q,
-      answerLetter: answerLetter,
-      answerText: answerText,
-      normalized: normalizeForMatch(sourceText),
-      preview: q.stem.replace(/\n/g, ' ').slice(0, 90)
-    };
-  });
-  return questionIndexCache;
-}
-
-function normalizeForMatch(text) {
-  return String(text || '')
-    .normalize('NFKC')
-    .toLowerCase()
-    .replace(/[Ａ-ＥA-E][\.．、:：]/g, '')
-    .replace(/[()（）［］\[\]{}｛｝〈〉《》「」『』,，.。:：;；!?！？\s\-—_]/g, '')
-    .replace(/[^\u0000-\u007f\u3400-\u9fff]/g, '')
-    .replace(/0/g, 'o')
-    .replace(/1/g, 'l');
-}
-
-function bigramSet(s) {
-  const set = new Set();
-  if (!s) return set;
-  if (s.length === 1) { set.add(s); return set; }
-  for (let i = 0; i < s.length - 1; i++) set.add(s.slice(i, i + 2));
-  return set;
-}
-
-function similarityScore(a, b) {
-  if (!a || !b) return 0;
-  if (b.indexOf(a) !== -1 || a.indexOf(b) !== -1) return Math.min(0.96, Math.min(a.length, b.length) / Math.max(a.length, b.length) + 0.18);
-  const aSet = bigramSet(a);
-  const bSet = bigramSet(b);
-  let hit = 0;
-  aSet.forEach(function (x) { if (bSet.has(x)) hit++; });
-  return (2 * hit) / Math.max(1, aSet.size + bSet.size);
-}
-
-function findQuestionMatches(segmentText) {
-  const normalized = normalizeForMatch(segmentText);
-  const questionNumber = extractQuestionNumber(segmentText);
-  return buildQuestionIndex().map(function (item) {
-    let score = similarityScore(normalized, item.normalized);
-    if (questionNumber && item.q.n === questionNumber) score += 0.04;
-    return Object.assign({}, item, { score: Math.min(score, 0.99) });
-  }).sort(function (a, b) { return b.score - a.score; }).slice(0, 3);
-}
-
-function extractQuestionNumber(text) {
-  const m = String(text || '').match(/(?:^|\n)\s*(?:[（(]\s*[）)]\s*)?(\d{1,3})\s*[\.．、]/);
-  return m ? parseInt(m[1], 10) : null;
-}
-
-function splitOcrQuestions(text) {
-  const cleaned = String(text || '').replace(/\r/g, '\n').replace(/[ \t]+/g, ' ').replace(/\n{2,}/g, '\n');
-  const re = /(?:^|\n)\s*(?:[（(]\s*[）)]\s*)?\d{1,3}\s*[\.．、]/g;
-  const starts = [];
-  let m;
-  while ((m = re.exec(cleaned)) !== null) starts.push(m.index + (cleaned[m.index] === '\n' ? 1 : 0));
-  if (starts.length < 2) return cleaned.trim() ? [cleaned.trim()] : [];
-  return starts.map(function (start, i) {
-    const end = i + 1 < starts.length ? starts[i + 1] : cleaned.length;
-    return cleaned.slice(start, end).trim();
-  }).filter(function (part) { return normalizeForMatch(part).length > 8; });
-}
-
-function confidenceLabel(score) {
-  if (score >= 0.42) return '<span class="badge badge-ok">高信心</span>';
-  if (score >= 0.26) return '<span class="badge">請確認</span>';
-  return '<span class="badge badge-no">低信心</span>';
-}
-
-function renderScanPage() {
-  scanState = { imageDataUrl: '', processedDataUrl: '', rotation: 0, cropMode: false, cropRect: null, dragStart: null, results: [], ocrText: '' };
-  let html = '<button id="back-btn" class="btn-back">← 返回</button>';
-  html += '<h1>拍照查整頁答案</h1>';
-  html += '<div class="mode-card-static">';
-  html += '<div class="mode-title">紙本考卷整頁辨識</div>';
-  html += '<div class="mode-desc">照片只在本機瀏覽器處理。建議直拍、光線均勻、讓題目文字充滿畫面。</div>';
-  html += '<input id="scan-file" class="scan-file" type="file" accept="image/*" capture="environment">';
-  html += '<button id="pick-scan" class="btn-primary">拍照或選擇圖片</button>';
-  html += '</div>';
-  document.getElementById('app').innerHTML = html;
-  document.getElementById('back-btn').addEventListener('click', renderHome);
-  document.getElementById('pick-scan').addEventListener('click', function () { document.getElementById('scan-file').click(); });
-  document.getElementById('scan-file').addEventListener('change', onScanFileSelected);
-}
-
-function onScanFileSelected(evt) {
-  const file = evt.target.files && evt.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function () {
-    scanState.imageDataUrl = reader.result;
-    scanState.rotation = 0;
-    prepareScanImage().then(renderScanPreview).catch(function (err) { renderScanError(err.message || String(err)); });
-  };
-  reader.readAsDataURL(file);
-}
-
-function prepareScanImage() {
-  return new Promise(function (resolve, reject) {
-    const img = new Image();
-    img.onload = function () {
-      const rotated = scanState.rotation % 180 !== 0;
-      const sourceW = rotated ? img.height : img.width;
-      const sourceH = rotated ? img.width : img.height;
-      const maxSide = 1800;
-      const scale = Math.min(1, maxSide / Math.max(sourceW, sourceH));
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.max(1, Math.round(sourceW * scale));
-      canvas.height = Math.max(1, Math.round(sourceH * scale));
-      const ctx = canvas.getContext('2d');
-      ctx.save();
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate(scanState.rotation * Math.PI / 180);
-      ctx.drawImage(img, -img.width * scale / 2, -img.height * scale / 2, img.width * scale, img.height * scale);
-      ctx.restore();
-      enhancePaperCanvas(canvas);
-      scanState.processedDataUrl = canvas.toDataURL('image/jpeg', 0.92);
-      resolve();
-    };
-    img.onerror = function () { reject(new Error('圖片讀取失敗，請換一張照片再試。')); };
-    img.src = scanState.imageDataUrl;
-  });
-}
-
-function enhancePaperCanvas(canvas) {
-  const ctx = canvas.getContext('2d');
-  const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const data = img.data;
-  let sum = 0;
-  for (let i = 0; i < data.length; i += 4) {
-    const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-    sum += gray;
-  }
-  const avg = sum / (data.length / 4);
-  for (let i = 0; i < data.length; i += 4) {
-    let gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-    gray = (gray - avg) * 1.45 + 205;
-    gray = Math.max(0, Math.min(255, gray));
-    data[i] = data[i + 1] = data[i + 2] = gray;
-  }
-  ctx.putImageData(img, 0, 0);
-}
-
-function renderScanPreview() {
-  let html = '<button id="back-btn" class="btn-back">← 返回</button>';
-  html += '<h1>確認照片</h1>';
-  html += '<div class="q-card">';
-  html += '<div class="mode-desc">如果照片方向不對可旋轉；整頁辨識失敗時，可開啟框選模式只辨識單題。</div>';
-  html += '<div class="scan-canvas-wrap"><canvas id="scan-crop-canvas"></canvas></div>';
-  html += '<div class="scan-actions">';
-  html += '<button id="rotate-left" class="btn-secondary">向左旋轉</button>';
-  html += '<button id="rotate-right" class="btn-secondary">向右旋轉</button>';
-  html += '<button id="toggle-crop" class="btn-secondary">框選單題區</button>';
-  html += '<button id="ocr-crop" class="btn-secondary">辨識框選區</button>';
-  html += '</div>';
-  html += '<button id="ocr-full" class="btn-primary">開始辨識整頁</button>';
-  html += '<button id="repick" class="btn-secondary">重新拍照</button>';
-  html += '<div id="scan-status" class="scan-status" style="display:none;"></div>';
-  html += '</div>';
-  document.getElementById('app').innerHTML = html;
-  document.getElementById('back-btn').addEventListener('click', renderHome);
-  document.getElementById('repick').addEventListener('click', renderScanPage);
-  document.getElementById('rotate-left').addEventListener('click', function () { rotateScan(-90); });
-  document.getElementById('rotate-right').addEventListener('click', function () { rotateScan(90); });
-  document.getElementById('toggle-crop').addEventListener('click', toggleCropMode);
-  document.getElementById('ocr-full').addEventListener('click', function () { recognizeScan(scanState.processedDataUrl); });
-  document.getElementById('ocr-crop').addEventListener('click', recognizeCropSelection);
-  setupScanCanvas();
-}
-
-function rotateScan(deg) {
-  scanState.rotation = (scanState.rotation + deg + 360) % 360;
-  scanState.cropRect = null;
-  prepareScanImage().then(renderScanPreview).catch(function (err) { renderScanError(err.message || String(err)); });
-}
-
-function setupScanCanvas() {
-  const canvas = document.getElementById('scan-crop-canvas');
-  const img = new Image();
-  img.onload = function () {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    drawScanCanvas(img);
-    canvas._scanImage = img;
-  };
-  img.src = scanState.processedDataUrl;
-  canvas.addEventListener('pointerdown', function (evt) {
-    if (!scanState.cropMode) return;
-    const p = canvasPoint(evt, canvas);
-    scanState.dragStart = p;
-    scanState.cropRect = { x: p.x, y: p.y, w: 0, h: 0 };
-  });
-  canvas.addEventListener('pointermove', function (evt) {
-    if (!scanState.cropMode || !scanState.dragStart) return;
-    const p = canvasPoint(evt, canvas);
-    scanState.cropRect = rectFromPoints(scanState.dragStart, p);
-    drawScanCanvas(canvas._scanImage);
-  });
-  canvas.addEventListener('pointerup', function () { scanState.dragStart = null; drawScanCanvas(canvas._scanImage); });
-}
-
-function canvasPoint(evt, canvas) {
-  const rect = canvas.getBoundingClientRect();
-  return { x: (evt.clientX - rect.left) * canvas.width / rect.width, y: (evt.clientY - rect.top) * canvas.height / rect.height };
-}
-function rectFromPoints(a, b) { return { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), w: Math.abs(a.x - b.x), h: Math.abs(a.y - b.y) }; }
-
-function drawScanCanvas(img) {
-  const canvas = document.getElementById('scan-crop-canvas');
-  if (!canvas || !img) return;
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(img, 0, 0);
-  if (scanState.cropMode) {
-    ctx.fillStyle = 'rgba(24, 95, 165, 0.10)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  }
-  if (scanState.cropRect && scanState.cropRect.w > 4 && scanState.cropRect.h > 4) {
-    const r = scanState.cropRect;
-    ctx.save();
-    ctx.strokeStyle = '#185fa5';
-    ctx.lineWidth = Math.max(4, canvas.width / 300);
-    ctx.setLineDash([14, 8]);
-    ctx.strokeRect(r.x, r.y, r.w, r.h);
-    ctx.restore();
-  }
-}
-
-function toggleCropMode() {
-  scanState.cropMode = !scanState.cropMode;
-  scanState.cropRect = null;
-  const btn = document.getElementById('toggle-crop');
-  if (btn) btn.textContent = scanState.cropMode ? '取消框選' : '框選單題區';
-  const status = document.getElementById('scan-status');
-  if (status) {
-    status.style.display = scanState.cropMode ? 'block' : 'none';
-    status.textContent = '請在照片上拖曳框出單一題目區，再按「辨識框選區」。';
-  }
-  const canvas = document.getElementById('scan-crop-canvas');
-  drawScanCanvas(canvas && canvas._scanImage);
-}
-
-function recognizeCropSelection() {
-  const canvas = document.getElementById('scan-crop-canvas');
-  const r = scanState.cropRect;
-  if (!canvas || !r || r.w < 20 || r.h < 20) {
-    setScanStatus('請先框選一塊足夠大的題目區。');
-    return;
-  }
-  const crop = document.createElement('canvas');
-  crop.width = Math.round(r.w);
-  crop.height = Math.round(r.h);
-  crop.getContext('2d').drawImage(canvas, r.x, r.y, r.w, r.h, 0, 0, crop.width, crop.height);
-  recognizeScan(crop.toDataURL('image/jpeg', 0.94));
-}
-
-function setScanStatus(message) {
-  const el = document.getElementById('scan-status');
-  if (!el) return;
-  el.style.display = 'block';
-  el.textContent = message;
-}
-
-async function getOcrWorker(logger) {
-  if (!window.Tesseract) throw new Error('找不到本機 OCR 套件，請確認 vendor/tesseract/tesseract.min.js 是否存在。');
-  if (!ocrWorkerPromise) {
-    ocrWorkerPromise = Tesseract.createWorker('chi_tra', 1, Object.assign({}, OCR_CONFIG, { logger: logger }));
-  }
-  return await ocrWorkerPromise;
-}
-
-async function recognizeScan(imageDataUrl) {
-  try {
-    setScanStatus('OCR 初始化中...');
-    const worker = await getOcrWorker(function (m) {
-      if (m && m.status) setScanStatus('OCR ' + m.status + (m.progress ? ' ' + Math.round(m.progress * 100) + '%' : ''));
-    });
-    setScanStatus('正在辨識照片文字...');
-    const result = await worker.recognize(imageDataUrl);
-    const text = result && result.data ? result.data.text : '';
-    scanState.ocrText = text;
-    const parts = splitOcrQuestions(text);
-    scanState.results = parts.map(function (part) { return { segment: part, matches: findQuestionMatches(part), selected: 0 }; });
-    renderScanResults();
-  } catch (err) {
-    renderScanError((err && err.message) ? err.message : String(err));
-  }
-}
-
-function renderScanError(message) {
-  let html = '<button id="back-btn" class="btn-back">← 返回</button>';
-  html += '<h1>辨識沒有完成</h1>';
-  html += '<div class="q-card"><div class="scan-status">' + escapeHtml(message) + '</div>';
-  html += '<button id="retry-scan" class="btn-primary">重新拍照</button>';
-  html += '<div class="mode-desc" style="margin-top:10px;">如果你是直接開啟 HTML 檔，瀏覽器可能會阻擋本機 worker/wasm。可改用本機伺服器開啟這個資料夾。</div></div>';
-  document.getElementById('app').innerHTML = html;
-  document.getElementById('back-btn').addEventListener('click', renderHome);
-  document.getElementById('retry-scan').addEventListener('click', renderScanPage);
-}
-
-function renderScanResults() {
-  let html = '<button id="back-btn" class="btn-back">← 返回</button>';
-  html += '<h1>辨識結果</h1>';
-  html += '<div class="mode-card-static"><div class="mode-title">找到 ' + scanState.results.length + ' 個題目區塊</div>';
-  html += '<div class="mode-desc">高信心會直接顯示答案；低信心請改選候選題，或回上一頁框選單題區。</div></div>';
-  if (scanState.results.length === 0) {
-    html += '<div class="q-card"><div class="search-empty">沒有切出題目。可回上一頁框選單題區，或在下方貼上 OCR 文字重新比對。</div></div>';
-  }
-  scanState.results.forEach(function (res, idx) {
-    const selected = res.matches[res.selected] || res.matches[0];
-    html += renderScanResultCard(res, selected, idx);
-  });
-  html += '<div class="q-card"><div class="mode-title">OCR 原文</div>';
-  html += '<textarea id="ocr-manual-text" class="ocr-textarea">' + escapeHtml(scanState.ocrText || '') + '</textarea>';
-  html += '<button id="rerun-match" class="btn-secondary">用上方文字重新切題比對</button></div>';
-  document.getElementById('app').innerHTML = html;
-  document.getElementById('back-btn').addEventListener('click', renderScanPreview);
-  document.getElementById('rerun-match').addEventListener('click', function () {
-    const text = document.getElementById('ocr-manual-text').value;
-    scanState.ocrText = text;
-    scanState.results = splitOcrQuestions(text).map(function (part) { return { segment: part, matches: findQuestionMatches(part), selected: 0 }; });
-    renderScanResults();
-  });
-  document.querySelectorAll('.scan-candidate').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      const resultIndex = parseInt(btn.dataset.result, 10);
-      const matchIndex = parseInt(btn.dataset.match, 10);
-      scanState.results[resultIndex].selected = matchIndex;
-      renderScanResults();
-    });
-  });
-}
-
-function renderScanResultCard(res, selected, idx) {
-  if (!selected) {
-    return '<div class="scan-result-card"><div class="scan-result-head"><span>題目區塊 ' + (idx + 1) + '</span><span class="badge badge-no">無候選</span></div><div class="search-empty">無法比對題庫。</div></div>';
-  }
-  const q = selected.q;
-  let html = '<div class="scan-result-card">';
-  html += '<div class="scan-result-head"><span>題目區塊 ' + (idx + 1) + ' · ' + EXAM[q.exam].label + ' · 第 ' + q.ch + ' 章第 ' + q.n + ' 題</span>' + confidenceLabel(selected.score) + '</div>';
-  html += '<div class="search-item-stem">' + escapeHtml(selected.preview) + '</div>';
-  html += '<div class="scan-answer">答案：' + selected.answerLetter + '</div>';
-  html += '<div class="scan-answer-option"><span class="opt-key">' + selected.answerLetter + '.</span>' + escapeHtml(selected.answerText) + '</div>';
-  html += '<div class="explain"><b>解析</b>' + escapeHtml(q.exp).replace(/\n/g, '<br>') + '</div>';
-  html += '<div class="scan-candidates">';
-  res.matches.forEach(function (m, matchIdx) {
-    html += '<button class="scan-candidate" data-result="' + idx + '" data-match="' + matchIdx + '">';
-    html += (matchIdx === res.selected ? '✓ ' : '') + Math.round(m.score * 100) + '% · 第 ' + m.q.ch + ' 章第 ' + m.q.n + ' 題 · ' + escapeHtml(m.preview);
-    html += '</button>';
-  });
-  html += '</div></div>';
-  return html;
-}
-
 function renderHome() {
   const examConf = EXAM[currentExam];
   const examQs = questionsOfExam(currentExam);
@@ -1277,7 +782,6 @@ function renderHome() {
   html += '</div>';
 
   html += '<h2>選擇模式</h2>';
-  html += '<div class="mode-card" data-mode="camera"><div class="mode-title">📷 拍照查整頁答案</div><div class="mode-desc">整頁拍紙本考卷，本機 OCR 後自動比對題庫答案</div></div>';
   html += '<div class="mode-card" data-mode="chapter"><div class="mode-title">📖 依章節練習</div><div class="mode-desc">挑選一個章節依序練習</div></div>';
 
   const savedCount = parseInt(localStorage.getItem('fm_random_count') || '30');
@@ -1320,8 +824,7 @@ function renderHome() {
     el.addEventListener('click', function () {
       const mode = el.dataset.mode;
       if (mode === 'wrong' && wrongCount === 0) return;
-      if (mode === 'camera') renderScanPage();
-      else if (mode === 'chapter') renderChapterPicker();
+      if (mode === 'chapter') renderChapterPicker();
       else if (mode === 'wrong') {
         const wrongQs = examQs.filter(function (q) { return progress.wrongIds.indexOf(qid(q)) !== -1; });
         startQuiz('wrong', shuffle(wrongQs));
